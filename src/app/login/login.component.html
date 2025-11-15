@@ -1,0 +1,114 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="logo">
+        <span class="logo-icon">💰</span>
+        <span class="logo-text">SimuX</span>
+      </div>
+      <h1 class="auth-title">Welcome back</h1>
+      <p class="auth-subtitle">Sign in to your account to continue</p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email address</label>
+        <div class="input-container" [class.error]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span class="input-icon">📧</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            class="form-input"
+          >
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+          <span *ngIf="loginForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="loginForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <div class="form-label-row">
+          <label for="password" class="form-label">Password</label>
+          <a class="forgot-password" (click)="onForgotPassword()">Forgot password?</a>
+        </div>
+        <div class="input-container" [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          <span class="input-icon">🔒</span>
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Enter your password"
+            class="form-input"
+          >
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+        <div class="error-message" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Password is required
+        </div>
+      </div>
+
+      <!-- Remember Me & Error Message -->
+      <div class="form-options">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="rememberMe">
+          <span class="checkmark"></span>
+          Remember me for 30 days
+        </label>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-banner" *ngIf="errorMessage">
+        <span class="error-icon">⚠️</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="auth-btn primary"
+        [disabled]="loginForm.invalid || isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Sign In</span>
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+      </button>
+    </form>
+
+    <!-- Social Login -->
+    <div class="social-divider">
+      <span>Or continue with</span>
+    </div>
+
+    <div class="social-buttons">
+      <button type="button" class="social-btn google" (click)="onSocialLogin('google')">
+        <span class="social-icon">🔍</span>
+        Google
+      </button>
+      <button type="button" class="social-btn apple" (click)="onSocialLogin('apple')">
+        <span class="social-icon">🍎</span>
+        Apple
+      </button>
+    </div>
+
+    <!-- Sign Up Link -->
+    <div class="auth-footer">
+      <p>Don't have an account? <a class="auth-link" (click)="switchToRegister()">Sign up</a></p>
+    </div>
+  </div>
+
+  <!-- Demo Banner -->
+  <div class="demo-banner" *ngIf="showDemoBanner">
+    <div class="demo-content">
+      <span class="demo-icon">🎮</span>
+      <span>Demo mode active. Use any credentials to test.</span>
+    </div>
+  </div>
+</div>

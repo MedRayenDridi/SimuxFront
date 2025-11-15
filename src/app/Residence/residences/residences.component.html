@@ -1,0 +1,23 @@
+<h1 style="text-align: center;padding: 2%;">List Residences</h1>
+<div class="search-container" style="text-align: center; margin-bottom: 20px;">
+  <input [(ngModel)]="searchText" placeholder="Rechercher par adresse" 
+         class="form-control form-control-lg" style="width: 50%; max-width: 500px; border-radius: 30px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);" />
+</div>
+<div class="container">
+  <div class="row">
+<div  class="col" *ngFor="let R of listResidences"> 
+  <div class="col" *ngIf="R.address.toLowerCase().includes(searchText.toLowerCase())">  
+  <div class="card h-100">
+    <img class="card-img-top" [src]="R.image" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{R.name}}</h5>
+      <h5 class="card-title">{{R.status}}<span [innerHTML]="getStatusIcon(R.status)"></span></h5>
+      <h5  *ngIf="selectedResidenceId === R.id" class="card-text">{{R.address}}</h5>
+      <a   class="btn btn-primary" (click)="showadd(R)">ShowLocation</a>
+      <a   class="btn btn-primary" [routerLink]="['/residenceD',R.id]">Show Details</a>
+      <button class="btn btn-success ml-2" (click)="addToFavorites(R)">Like ❤️</button>
+    </div>
+  </div>
+</div>
+</div>
+</div>

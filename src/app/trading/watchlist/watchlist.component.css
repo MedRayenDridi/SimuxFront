@@ -1,0 +1,507 @@
+/* ============================================
+   PREVENT HORIZONTAL SCROLL - COMPACT VERSION
+   ============================================ */
+
+/* Global overflow fix */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Host element fix */
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Dashboard container - Compact */
+.dashboard {
+  position: relative;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fef8f0 0%, #f5ede0 100%);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Main content - Compact & properly contained */
+.content {
+  padding: 20px; /* Reduced from 28px */
+  margin-left: 280px;
+  width: calc(100vw - 280px);
+  max-width: calc(100vw - 280px);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 18px; /* Reduced from 24px */
+  min-height: 100vh;
+  color: var(--color-fg);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   TOPBAR - Compact Version
+   ============================================ */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(232, 213, 183, 0.5);
+  padding: 14px 20px; /* Reduced padding */
+  border-radius: 16px; /* Smaller radius */
+  box-shadow: 0 6px 24px rgba(193, 120, 23, 0.08);
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.search {
+  flex: 1;
+  max-width: 320px; /* Reduced from 400px */
+}
+
+.search input {
+  width: 100%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  padding: 10px 18px; /* Reduced padding */
+  font-size: 13px; /* Smaller font */
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.04);
+  box-sizing: border-box;
+  color: var(--color-fg);
+}
+
+.actions {
+  display: flex;
+  gap: 10px; /* Reduced from 14px */
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.icon {
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px; /* Smaller */
+  padding: 8px 10px; /* Reduced padding */
+  cursor: pointer;
+  font-size: 15px; /* Smaller icon */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.04);
+  color: var(--color-fg);
+}
+
+.date-range {
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  padding: 8px 14px; /* Reduced */
+  font-size: 12px; /* Smaller */
+  font-weight: 600;
+  color: #8b6914;
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.04);
+  white-space: nowrap;
+}
+
+.avatar {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #d4941f 100%);
+  color: var(--color-primary-contrast);
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  padding: 8px 10px; /* Reduced */
+  cursor: pointer;
+  font-size: 15px; /* Smaller */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 3px 12px rgba(193, 120, 23, 0.25);
+  flex-shrink: 0;
+}
+
+/* ============================================
+   TABS - Compact
+   ============================================ */
+.tabs {
+  display: flex;
+  gap: 10px; /* Reduced */
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 18px; /* Reduced */
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.tabs::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+.tab {
+  padding: 8px 16px; /* Reduced */
+  border: 2px solid var(--color-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px; /* Smaller */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.04);
+  color: var(--color-fg);
+  white-space: nowrap;
+}
+
+/* ============================================
+   CARD - Compact
+   ============================================ */
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid var(--color-border);
+  border-radius: 16px; /* Smaller */
+  box-shadow: 0 6px 24px rgba(193, 120, 23, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+/* ============================================
+   TABLE - Compact & No Overflow
+   ============================================ */
+.watchlist-table {
+  padding: 20px; /* Reduced */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(193, 120, 23, 0.06);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.table-header,
+.table-row {
+  display: grid;
+  grid-template-columns: 0.4fr 1.8fr 1fr 1.1fr 1fr 1fr 0.8fr 1.2fr; /* Slightly reduced */
+  gap: 12px; /* Reduced */
+  align-items: center;
+  padding: 14px 12px; /* Reduced padding */
+  box-sizing: border-box;
+  min-width: 0; /* Prevent overflow */
+}
+
+.table-header {
+  font-weight: 700;
+  font-size: 11px; /* Smaller */
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #8b6914;
+  background: linear-gradient(135deg, rgba(254, 244, 226, 0.5) 0%, rgba(254, 244, 226, 0.3) 100%);
+  border-bottom: 2px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.rank {
+  font-weight: 800;
+  color: #8b6914;
+  font-size: 13px; /* Smaller */
+  background: linear-gradient(135deg, rgba(193, 120, 23, 0.15) 0%, rgba(193, 120, 23, 0.05) 100%);
+  width: 30px; /* Smaller */
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.1);
+  flex-shrink: 0;
+}
+
+.coin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced */
+  min-width: 0;
+  overflow: hidden;
+}
+
+.coin-logo {
+  width: 32px; /* Smaller */
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  box-shadow: 0 2px 8px rgba(193, 120, 23, 0.1);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.coin-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.coin-name {
+  font-weight: 800;
+  font-size: 14px; /* Smaller */
+  color: var(--color-fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.coin-symbol {
+  font-size: 11px; /* Smaller */
+  color: #8b6914;
+  text-transform: uppercase;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.price {
+  font-weight: 800;
+  font-size: 14px; /* Smaller */
+  color: var(--color-fg);
+}
+
+.positive,
+.negative {
+  font-weight: 800;
+  font-size: 13px; /* Smaller */
+}
+
+.volume,
+.market-cap {
+  font-weight: 700;
+  font-size: 13px; /* Smaller */
+  color: #5a4a0f;
+}
+
+.mini-chart {
+  width: 60px; /* Smaller */
+  height: 32px; /* Smaller */
+}
+
+/* ============================================
+   ACTION BUTTONS - Compact
+   ============================================ */
+.actions {
+  display: flex;
+  gap: 6px; /* Reduced */
+  flex-wrap: wrap;
+}
+
+.btn-sm {
+  padding: 6px 12px; /* Reduced */
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-card);
+  cursor: pointer;
+  font-size: 11px; /* Smaller */
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(193, 120, 23, 0.04);
+  color: var(--color-fg);
+}
+
+/* ============================================
+   QUICK ACTIONS - Compact
+   ============================================ */
+.quick-actions {
+  padding: 20px; /* Reduced */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.quick-actions h3 {
+  margin: 0 0 18px 0; /* Reduced */
+  font-size: 18px; /* Smaller */
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Smaller min */
+  gap: 16px; /* Reduced */
+}
+
+.action-card {
+  padding: 20px; /* Reduced */
+  border-radius: 14px;
+}
+
+.action-icon {
+  font-size: 36px; /* Smaller */
+  margin-bottom: 12px; /* Reduced */
+}
+
+.action-title {
+  font-size: 15px; /* Smaller */
+}
+
+.action-desc {
+  font-size: 12px; /* Smaller */
+  margin-bottom: 16px; /* Reduced */
+}
+
+/* ============================================
+   PAGINATION - Compact
+   ============================================ */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px; /* Reduced */
+  padding: 20px; /* Reduced */
+  margin-top: 16px;
+  border-top: 2px solid var(--color-border);
+}
+
+.btn-pagination {
+  padding: 10px 20px; /* Reduced */
+  font-size: 13px; /* Smaller */
+}
+
+.page-info {
+  font-size: 14px; /* Smaller */
+  padding: 6px 12px; /* Reduced */
+}
+
+/* ============================================
+   RESPONSIVE - Enhanced
+   ============================================ */
+@media (max-width: 1400px) {
+  .content {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 0.4fr 1.6fr 1fr 1fr 0.9fr 1fr;
+    gap: 10px;
+  }
+
+  .mini-chart,
+  .volume {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .content {
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .search {
+    max-width: 250px;
+  }
+
+  .search input {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .table-header,
+  .table-row {
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    padding: 12px 10px;
+  }
+
+  .rank,
+  .volume,
+  .market-cap,
+  .mini-chart {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .search {
+    max-width: 100%;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ============================================
+   PREVENT ALL OVERFLOW
+   ============================================ */
+.table-container,
+.watchlist-table,
+.card,
+.content,
+.dashboard {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Custom scrollbar for table only if needed */
+.table-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: rgba(193, 120, 23, 0.05);
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--color-primary) 0%, #d4941f 100%);
+  border-radius: 10px;
+}

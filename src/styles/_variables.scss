@@ -1,0 +1,55 @@
+// Color Variables
+$primary-bg: #fef4e2;
+$primary-dark: #14301f;
+$success: #22c55e;
+$danger: #ef4444;
+$warning: #f59e0b;
+$info: #3b82f6;
+$card-bg: #ffffff;
+$card-bg-transparent: rgba(255, 255, 255, 0.6);
+$text-primary: #1f2937;
+$text-secondary: #6b7280;
+$text-light: #9ca3af;
+$border-color: #e5e7eb;
+$hover-bg: rgba(20, 48, 31, 0.05);
+
+// Spacing Variables
+$page-padding: 32px;
+$card-padding: 24px;
+$section-gap: 32px;
+$element-spacing: 16px;
+$element-spacing-sm: 8px;
+
+// Typography
+$font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-xs: 12px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 32px;
+
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Component Styles
+$border-radius: 12px;
+$border-radius-sm: 8px;
+$border-radius-xs: 6px;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$box-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+$transition: all 0.2s ease;
+$transition-fast: all 0.15s ease;
+
+// Layout
+$sidebar-width: 240px;
+$sidebar-collapsed-width: 80px;
+$header-height: 72px;
+
+// Breakpoints
+$breakpoint-mobile: 768px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1440px;

@@ -1,0 +1,99 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+:root {
+  --color-bg: #fef4e2;      /* warm sand */
+  --color-fg: #14301f;      /* deep green */
+  --color-card: #fff8ea;
+  --color-muted: rgba(20, 48, 31, 0.65);
+  --color-border: rgba(20, 48, 31, 0.15);
+  --color-primary: #14301f;
+  --color-primary-contrast: #fef4e2;
+  --color-primary-hover: #0f2619;
+  --color-accent: #1e4a31;
+  --shadow-sm: 0 1px 3px rgba(20,48,31,0.08), 0 1px 2px rgba(20,48,31,0.06);
+  --shadow-md: 0 4px 6px rgba(20,48,31,0.10), 0 2px 4px rgba(20,48,31,0.08);
+  --radius: 12px;
+}
+
+html, body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+/* Typography & links */
+a {
+  color: var(--color-accent);
+}
+a:hover { color: var(--color-primary); }
+
+/* Cards / panels */
+.auth-container,
+.card, .panel, .mat-card {
+  background: transparent;
+}
+.auth-card, .card, .panel, .mat-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Inputs */
+input, select, textarea, .form-control {
+  background: #fffdfa;
+  color: var(--color-fg);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+input::placeholder, textarea::placeholder { color: var(--color-muted); }
+
+.input-container.error input,
+.ng-invalid.ng-touched {
+  border-color: rgba(200, 60, 60, 0.5);
+}
+
+/* Buttons */
+.auth-btn.primary,
+.btn-primary,
+button[type="submit"] {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+}
+.auth-btn.primary:hover,
+.btn-primary:hover,
+button[type="submit"]:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+/* Secondary / outline */
+.btn-outline,
+.btn-outline-primary,
+.auth-btn.secondary {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+}
+.btn-outline:hover,
+.btn-outline-primary:hover,
+.auth-btn.secondary:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+/* Headers / navbar */
+header, .navbar {
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Utility */
+.error-message, .error-banner { color: #8b1e1e; }
+.success { color: #144b2e; }
+
+/* Smooth transitions for a modern feel */
+* { transition: background-color .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease; }

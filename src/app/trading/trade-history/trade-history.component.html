@@ -1,0 +1,197 @@
+<div class="dashboard">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="search">
+        <input placeholder="Search stocks, crypto..." [(ngModel)]="filters.symbol" (input)="onFilterChange()">
+      </div>
+      <div class="actions">
+        <button class="icon" title="Refresh" (click)="refreshData()">⟳</button>
+        <button class="icon" title="Notifications">🔔</button>
+        <div class="date-range">{{ filters.startDate | date:'d MMM yyyy' }} - {{ filters.endDate | date:'d MMM yyyy' }}</div>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner">Loading trade history...</div>
+    </div>
+
+    <!-- Filters -->
+    <section class="filters card" *ngIf="!loading">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>Date Range</label>
+          <input type="date" class="filter-input" [(ngModel)]="filters.startDate" (change)="onFilterChange()"> 
+          to 
+          <input type="date" class="filter-input" [(ngModel)]="filters.endDate" (change)="onFilterChange()">
+        </div>
+        <div class="filter-group">
+          <label>Trade Type</label>
+          <select class="filter-select" [(ngModel)]="filters.tradeType" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="buy">Buy</option>
+            <option value="sell">Sell</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Status</label>
+          <select class="filter-select" [(ngModel)]="filters.status" (change)="onFilterChange()">
+            <option value="all">All</option>
+            <option value="success">Completed</option>
+            <option value="pending">Pending</option>
+            <option value="failed">Failed</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Symbol</label>
+          <input type="text" placeholder="Search symbol..." class="filter-input" [(ngModel)]="filters.symbol" (input)="onFilterChange()">
+        </div>
+        <button class="btn-reset" (click)="resetFilters()">Reset</button>
+        <button class="btn-primary" (click)="exportToCSV()">Export CSV</button>
+      </div>
+    </section>
+
+    <!-- Summary Cards -->
+    <section class="summary-cards" *ngIf="!loading">
+      <div class="card">
+        <div class="label">Total Trades</div>
+        <div class="value">{{ stats.totalTrades }}</div>
+        <div class="sub">All time</div>
+      </div>
+      <div class="card">
+        <div class="label">Winning Trades</div>
+        <div class="value">{{ stats.winningTrades }}</div>
+        <div class="sub">{{ stats.winRate | number:'1.1-1' }}% win rate</div>
+        <div class="trend positive">▲ {{ stats.winRate | number:'1.1-1' }}%</div>
+      </div>
+      <div class="card">
+        <div class="label">Losing Trades</div>
+        <div class="value">{{ stats.losingTrades }}</div>
+        <div class="sub">{{ 100 - stats.winRate | number:'1.1-1' }}% loss rate</div>
+        <div class="trend negative">▼ {{ 100 - stats.winRate | number:'1.1-1' }}%</div>
+      </div>
+      <div class="card">
+        <div class="label">Avg Value/Trade</div>
+        <div class="value">{{ stats.avgProfitPerTrade | number:'1.2-2' }} TND</div>
+        <div class="sub">Per transaction</div>
+        <div class="trend positive">▲ +8.3%</div>
+      </div>
+    </section>
+
+    <!-- Trades Table -->
+    <section class="trades-table card" *ngIf="!loading">
+      <!-- Empty State -->
+      <div *ngIf="filteredOrders.length === 0" class="empty-state">
+        <div class="empty-icon">📊</div>
+        <div class="empty-text">No trades found</div>
+        <div class="empty-subtext">Try adjusting your filters or start trading</div>
+        <button class="btn-primary" routerLink="/markets">Go to Markets</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container" *ngIf="filteredOrders.length > 0">
+        <div class="table-header">
+          <div>Date/Time</div>
+          <div>Symbol</div>
+          <div>Type</div>
+          <div>Quantity</div>
+          <div>Price</div>
+          <div>Total Value</div>
+          <div>P/L</div>
+          <div>P/L %</div>
+          <div>Status</div>
+        </div>
+        <div class="table-row expandable" *ngFor="let order of paginatedOrders">
+          <div>{{ order.timestamp | date:'dd/MM/yyyy HH:mm' }}</div>
+          <div class="symbol-cell">
+            <img *ngIf="order.orderItem?.coin?.image" 
+                 [src]="order.orderItem.coin.image" 
+                 class="coin-icon-small" 
+                 [alt]="order.orderItem.coin.symbol">
+            <span class="symbol">{{ order.orderItem?.coin?.symbol?.toUpperCase() || 'N/A' }}</span>
+          </div>
+          <div>
+            <span class="badge" [class.buy]="order.orderType === 'BUY'" [class.sell]="order.orderType === 'SELL'">
+              {{ order.orderType }}
+            </span>
+          </div>
+          <div>{{ order.orderItem?.quantity | number:'1.2-6' }}</div>
+          <div>{{ (order.orderItem?.buyPrice || order.orderItem?.sellPrice || 0) | number:'1.2-2' }} TND</div>
+          <div class="total-value">{{ order.price | number:'1.2-2' }} TND</div>
+          <div [class.positive]="getOrderProfit(order) >= 0" [class.negative]="getOrderProfit(order) < 0">
+            {{ getOrderProfit(order) >= 0 ? '+' : '' }}{{ getOrderProfit(order) | number:'1.2-2' }} TND
+          </div>
+          <div [class.positive]="getOrderProfitPercent(order) >= 0" [class.negative]="getOrderProfitPercent(order) < 0">
+            {{ getOrderProfitPercent(order) >= 0 ? '+' : '' }}{{ getOrderProfitPercent(order) | number:'1.2-2' }}%
+          </div>
+          <div>
+            <span class="badge" 
+                  [class.success]="order.status === 'SUCCESS'" 
+                  [class.warning]="order.status === 'PENDING'"
+                  [class.danger]="order.status === 'FAILED'">
+              {{ order.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="filteredOrders.length > 0">
+        <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+        <ng-container *ngFor="let page of getPageNumbers()">
+          <button *ngIf="page > 0" 
+                  class="page-btn" 
+                  [class.active]="page === currentPage" 
+                  (click)="goToPage(page)">
+            {{ page }}
+          </button>
+          <span *ngIf="page === -1">...</span>
+        </ng-container>
+        <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+        <span class="page-info">Showing {{ startIndex }}-{{ endIndex }} of {{ filteredOrders.length }} trades</span>
+      </div>
+    </section>
+
+    <!-- Analytics -->
+    <section class="analytics" *ngIf="!loading && mostTradedSymbols.length > 0">
+      <div class="analytics-grid">
+        <div class="chart-card card">
+          <h3>Most Traded Symbols</h3>
+          <div class="symbols-list">
+            <div class="symbol-item" *ngFor="let item of mostTradedSymbols">
+              <span class="symbol">{{ item.symbol }}</span>
+              <div class="bar-container">
+                <div class="bar" [style.width.%]="item.percentage"></div>
+              </div>
+              <span class="count">{{ item.count }} trades</span>
+            </div>
+          </div>
+        </div>
+
+                <div class="chart-card card">
+          <h3>Trade Type Distribution</h3>
+          <div class="distribution-stats">
+            <div class="stat-item">
+              <div class="stat-label">Buy Orders</div>
+              <div class="stat-value positive">
+                {{ buyOrdersPercentage | number:'1.1-1' }}%
+              </div>
+              <div class="stat-count">{{ buyOrdersCount }} orders</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Sell Orders</div>
+              <div class="stat-value negative">
+                {{ sellOrdersPercentage | number:'1.1-1' }}%
+              </div>
+              <div class="stat-count">{{ sellOrdersCount }} orders</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+</div>

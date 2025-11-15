@@ -1,0 +1,136 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="logo">
+        <span class="logo-icon">🔑</span>
+        <span class="logo-text">SimuX</span>
+      </div>
+      <h1 class="auth-title">Activate Your Account</h1>
+      <p class="auth-subtitle">Enter the activation code sent to your email</p>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-banner" *ngIf="successMessage">
+      <span class="success-icon">✅</span>
+      {{ successMessage }}
+    </div>
+
+    <!-- Activation Form -->
+    <form [formGroup]="activationForm" (ngSubmit)="onActivate()" *ngIf="!showResendForm" class="auth-form">
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email address</label>
+        <div class="input-container" [class.error]="getFieldValidationState('email') === 'error'">
+          <span class="input-icon">📧</span>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            class="form-input"
+          >
+        </div>
+        <div class="error-message" *ngIf="activationForm.get('email')?.invalid && activationForm.get('email')?.touched">
+          <span *ngIf="activationForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="activationForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Activation Code Field -->
+      <div class="form-group">
+        <label for="activationCode" class="form-label">Activation Code</label>
+        <div class="input-container" [class.error]="getFieldValidationState('activationCode') === 'error'">
+          <span class="input-icon">🔢</span>
+          <input
+            id="activationCode"
+            type="text"
+            formControlName="activationCode"
+            placeholder="Enter 6-digit code"
+            class="form-input"
+            maxlength="6"
+          >
+        </div>
+        <div class="error-message" *ngIf="activationForm.get('activationCode')?.invalid && activationForm.get('activationCode')?.touched">
+          <span *ngIf="activationForm.get('activationCode')?.errors?.['required']">Activation code is required</span>
+          <span *ngIf="activationForm.get('activationCode')?.errors?.['pattern']">Please enter a valid 6-digit code</span>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-banner" *ngIf="errorMessage && !showResendForm">
+        <span class="error-icon">⚠️</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="auth-btn primary"
+        [disabled]="activationForm.invalid || isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Activate Account</span>
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+      </button>
+    </form>
+
+    <!-- Resend Form -->
+    <form [formGroup]="resendForm" (ngSubmit)="onResendCode()" *ngIf="showResendForm" class="auth-form">
+      <div class="form-group">
+        <label for="resendEmail" class="form-label">Email address</label>
+        <div class="input-container" [class.error]="getFieldValidationState('email', resendForm) === 'error'">
+          <span class="input-icon">📧</span>
+          <input
+            id="resendEmail"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your email"
+            class="form-input"
+          >
+        </div>
+        <div class="error-message" *ngIf="resendForm.get('email')?.invalid && resendForm.get('email')?.touched">
+          <span *ngIf="resendForm.get('email')?.errors?.['required']">Email is required</span>
+          <span *ngIf="resendForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-banner" *ngIf="errorMessage && showResendForm">
+        <span class="error-icon">⚠️</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="auth-btn primary"
+        [disabled]="resendForm.invalid || isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Send New Code</span>
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+      </button>
+    </form>
+
+    <!-- Toggle Forms -->
+    <div class="form-toggle">
+      <button type="button" class="toggle-btn" (click)="toggleResendForm()">
+        {{ showResendForm ? 'Back to Activation' : 'Didn\'t receive code?' }}
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="auth-footer">
+      <p>Remember your password? <a class="auth-link" (click)="goToLogin()">Sign in</a></p>
+    </div>
+  </div>
+
+  <!-- Info Banner -->
+  <div class="info-banner">
+    <div class="info-content">
+      <span class="info-icon">💡</span>
+      <span>Check your spam folder if you don't see the activation email</span>
+    </div>
+  </div>
+</div>

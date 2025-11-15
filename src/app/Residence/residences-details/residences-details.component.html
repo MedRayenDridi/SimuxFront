@@ -1,0 +1,15 @@
+<div class="container mt-4">
+    <h2>Détails de la résidence</h2>
+    <p>Identifiant de la résidence : {{ id }}</p>
+  
+    <!-- Ajoute ici plus de détails après avoir récupéré les données -->
+    <div *ngIf="residence">
+      <h3>{{ residence.name }}</h3>
+      <p>Status: {{ residence.status }}</p>
+      <p>Adresse: {{ residence.address }}</p>
+      <img [src]="residence.image" alt="{{ residence.name }}" class="img-fluid">
+    </div>
+  
+    <button class="btn btn-primary mt-3" routerLink="/residences">Retour</button>
+  </div>
+  

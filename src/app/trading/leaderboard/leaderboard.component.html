@@ -1,0 +1,233 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="logo">📈</span>
+      <span class="text">TradeSim</span>
+    </div>
+    <nav class="menu">
+      <button class="menu-item" routerLink="/dashboard" routerLinkActive="active">🏠 Dashboard</button>
+      <button class="menu-item" routerLink="/portfolio" routerLinkActive="active">💼 Portfolio</button>
+      <button class="menu-item" routerLink="/markets" routerLinkActive="active">📊 Markets</button>
+      <button class="menu-item" routerLink="/watchlist" routerLinkActive="active">⭐ Watchlist</button>
+      <button class="menu-item" routerLink="/trade-history" routerLinkActive="active">🕒 Trade History</button>
+      <button class="menu-item active" routerLink="/leaderboard" routerLinkActive="active">🏆 Leaderboard</button>
+      <button class="menu-item" routerLink="/learning" routerLinkActive="active">📚 Learning Center</button>
+    </nav>
+    <div class="upgrade">
+      <div class="card">
+        <div class="title">Upgrade to Premium</div>
+        <div class="desc">Unlock advanced analytics & realtime data</div>
+        <button class="btn-outline">Upgrade now</button>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="menu-item">⚙️ Settings</button>
+      <button class="menu-item">❓ Help Center</button>
+      <button class="menu-item">🚪 Log out</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="search">
+        <input placeholder="Search stocks, crypto...">
+      </div>
+      <div class="actions">
+        <button class="icon" title="Refresh">⟳</button>
+        <button class="icon" title="Notifications">🔔</button>
+        <div class="date-range">1 Sep 2024 - 31 Sep 2024</div>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <section class="time-tabs">
+      <button class="tab active">Daily</button>
+      <button class="tab">Weekly</button>
+      <button class="tab">Monthly</button>
+      <button class="tab">All-Time</button>
+    </section>
+
+    <section class="podium">
+      <div class="podium-standings">
+        <div class="podium-item second">
+          <div class="rank-badge silver">2</div>
+          <div class="user-avatar">👨‍💼</div>
+          <div class="user-name">Sarah Chen</div>
+          <div class="user-stats">
+            <div class="return-value">+12.4%</div>
+            <div class="portfolio-value">$245,890</div>
+          </div>
+          <div class="medal">🥈</div>
+        </div>
+        <div class="podium-item first">
+          <div class="rank-badge gold">1</div>
+          <div class="user-avatar">👩‍💻</div>
+          <div class="user-name">Alex Rodriguez</div>
+          <div class="user-stats">
+            <div class="return-value">+18.7%</div>
+            <div class="portfolio-value">$312,450</div>
+          </div>
+          <div class="medal">🥇</div>
+        </div>
+        <div class="podium-item third">
+          <div class="rank-badge bronze">3</div>
+          <div class="user-avatar">👨‍🎓</div>
+          <div class="user-name">Mike Johnson</div>
+          <div class="user-stats">
+            <div class="return-value">+9.8%</div>
+            <div class="portfolio-value">$198,340</div>
+          </div>
+          <div class="medal">🥉</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="rankings-table card">
+      <div class="table-container">
+        <div class="table-header">
+          <div>Rank</div>
+          <div>User</div>
+          <div>Portfolio Value</div>
+          <div>Total Return</div>
+          <div>Trades</div>
+          <div>Win Rate</div>
+          <div>Badge</div>
+        </div>
+        <div class="table-row current-user">
+          <div class="rank">47</div>
+          <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-details">
+              <div class="user-name">You</div>
+              <div class="user-handle">@yourusername</div>
+            </div>
+          </div>
+          <div>$128,450</div>
+          <div class="positive">+8.2%</div>
+          <div>247</div>
+          <div>64%</div>
+          <div><span class="badge consistent">Consistent</span></div>
+        </div>
+        <div class="table-row">
+          <div class="rank">4</div>
+          <div class="user-info">
+            <div class="user-avatar">🧑‍🚀</div>
+            <div class="user-details">
+              <div class="user-name">Emma Davis</div>
+              <div class="user-handle">@emmad</div>
+            </div>
+          </div>
+          <div>$187,650</div>
+          <div class="positive">+15.3%</div>
+          <div>189</div>
+          <div>71%</div>
+          <div><span class="badge day-trader">Day Trader</span></div>
+        </div>
+        <div class="table-row">
+          <div class="rank">5</div>
+          <div class="user-info">
+            <div class="user-avatar">👩‍🔬</div>
+            <div class="user-details">
+              <div class="user-name">Lisa Wong</div>
+              <div class="user-handle">@lisaw</div>
+            </div>
+          </div>
+          <div>$176,890</div>
+          <div class="positive">+12.8%</div>
+          <div>156</div>
+          <div>68%</div>
+          <div><span class="badge swing">Swing Trader</span></div>
+        </div>
+        <div class="table-row">
+          <div class="rank">6</div>
+          <div class="user-info">
+            <div class="user-avatar">🧑‍💼</div>
+            <div class="user-details">
+              <div class="user-name">David Kim</div>
+              <div class="user-handle">@davidk</div>
+            </div>
+          </div>
+          <div>$165,430</div>
+          <div class="positive">+11.2%</div>
+          <div>203</div>
+          <div>65%</div>
+          <div><span class="badge crypto">Crypto Expert</span></div>
+        </div>
+        <div class="table-row">
+          <div class="rank">7</div>
+          <div class="user-info">
+            <div class="user-avatar">👨‍🎨</div>
+            <div class="user-details">
+              <div class="user-name">James Liu</div>
+              <div class="user-handle">@jamesl</div>
+            </div>
+          </div>
+          <div>$152,780</div>
+          <div class="positive">+9.7%</div>
+          <div>178</div>
+          <div>62%</div>
+          <div><span class="badge consistent">Consistent</span></div>
+        </div>
+      </div>
+      <div class="rank-indicator">
+        <span>Your rank: #47 of 1,247 traders</span>
+      </div>
+    </section>
+
+    <section class="stats-sidebar">
+      <div class="stats-card card">
+        <h3>Your Statistics</h3>
+        <div class="stat-item">
+          <div class="stat-label">Current Rank</div>
+          <div class="stat-value">#47</div>
+          <div class="stat-trend positive">▲ +5 this week</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Percentile</div>
+          <div class="stat-value">96th</div>
+          <div class="stat-desc">Top 4% of traders</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Points to Next Rank</div>
+          <div class="stat-value">1,250</div>
+          <div class="stat-desc">Keep trading to climb</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">Monthly Achievement</div>
+          <div class="stat-value">🏆</div>
+          <div class="stat-desc">Consistent Trader</div>
+        </div>
+      </div>
+
+      <div class="categories card">
+        <h3>Category Leaderboards</h3>
+        <div class="category-tabs">
+          <button class="category-tab active">Best Day Trader</button>
+          <button class="category-tab">Best Swing Trader</button>
+          <button class="category-tab">Best Crypto Trader</button>
+          <button class="category-tab">Most Consistent</button>
+        </div>
+        <div class="category-rankings">
+          <div class="ranking-item">
+            <div class="rank">1</div>
+            <div class="user-avatar">👩‍💻</div>
+            <div class="user-name">Alex Rodriguez</div>
+            <div class="score">+18.7%</div>
+          </div>
+          <div class="ranking-item">
+            <div class="rank">2</div>
+            <div class="user-avatar">👨‍💼</div>
+            <div class="user-name">Sarah Chen</div>
+            <div class="score">+12.4%</div>
+          </div>
+          <div class="ranking-item current-user">
+            <div class="rank">3</div>
+            <div class="user-avatar">👤</div>
+            <div class="user-name">You</div>
+            <div class="score">+8.2%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

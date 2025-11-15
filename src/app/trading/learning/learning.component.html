@@ -1,0 +1,260 @@
+<div class="dashboard">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="logo">📈</span>
+      <span class="text">TradeSim</span>
+    </div>
+    <nav class="menu">
+      <button class="menu-item" routerLink="/dashboard" routerLinkActive="active">🏠 Dashboard</button>
+      <button class="menu-item" routerLink="/portfolio" routerLinkActive="active">💼 Portfolio</button>
+      <button class="menu-item" routerLink="/markets" routerLinkActive="active">📊 Markets</button>
+      <button class="menu-item" routerLink="/watchlist" routerLinkActive="active">⭐ Watchlist</button>
+      <button class="menu-item" routerLink="/trade-history" routerLinkActive="active">🕒 Trade History</button>
+      <button class="menu-item" routerLink="/leaderboard" routerLinkActive="active">🏆 Leaderboard</button>
+      <button class="menu-item active" routerLink="/learning" routerLinkActive="active">📚 Learning Center</button>
+    </nav>
+    <div class="upgrade">
+      <div class="card">
+        <div class="title">Upgrade to Premium</div>
+        <div class="desc">Unlock advanced analytics & realtime data</div>
+        <button class="btn-outline">Upgrade now</button>
+      </div>
+    </div>
+    <div class="bottom">
+      <button class="menu-item">⚙️ Settings</button>
+      <button class="menu-item">❓ Help Center</button>
+      <button class="menu-item">🚪 Log out</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="search">
+        <input placeholder="Search stocks, crypto...">
+      </div>
+      <div class="actions">
+        <button class="icon" title="Refresh">⟳</button>
+        <button class="icon" title="Notifications">🔔</button>
+        <div class="date-range">1 Sep 2024 - 31 Sep 2024</div>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <section class="learning-header">
+      <div class="welcome-card card">
+        <div class="welcome-content">
+          <h1>Welcome to Learning Center</h1>
+          <p>Master the art of trading with our comprehensive educational resources. From basics to advanced strategies, we've got you covered.</p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 35%"></div>
+          </div>
+          <div class="progress-text">35% Complete - 12 lessons remaining</div>
+        </div>
+        <div class="welcome-image">
+          <div class="illustration">📚🎓</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="learning-paths">
+      <div class="path-card card">
+        <div class="path-header">
+          <div class="path-icon">🚀</div>
+          <div class="path-info">
+            <h3>Beginner Trading Fundamentals</h3>
+            <p>Learn the basics of stock market investing</p>
+          </div>
+          <div class="path-progress">35%</div>
+        </div>
+        <div class="path-lessons">
+          <div class="lesson completed">
+            <div class="lesson-icon">✅</div>
+            <div class="lesson-title">What is Stock Trading?</div>
+            <div class="lesson-duration">5 min</div>
+          </div>
+          <div class="lesson completed">
+            <div class="lesson-icon">✅</div>
+            <div class="lesson-title">Understanding Market Orders</div>
+            <div class="lesson-duration">8 min</div>
+          </div>
+          <div class="lesson current">
+            <div class="lesson-icon">📖</div>
+            <div class="lesson-title">Reading Stock Charts</div>
+            <div class="lesson-duration">12 min</div>
+          </div>
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Technical Analysis Basics</div>
+            <div class="lesson-duration">15 min</div>
+          </div>
+        </div>
+        <button class="btn-primary">Continue Learning</button>
+      </div>
+
+      <div class="path-card card">
+        <div class="path-header">
+          <div class="path-icon">📈</div>
+          <div class="path-info">
+            <h3>Advanced Trading Strategies</h3>
+            <p>Master complex trading techniques</p>
+          </div>
+          <div class="path-progress">0%</div>
+        </div>
+        <div class="path-lessons">
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Options Trading 101</div>
+            <div class="lesson-duration">20 min</div>
+          </div>
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Swing Trading Strategies</div>
+            <div class="lesson-duration">18 min</div>
+          </div>
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Risk Management</div>
+            <div class="lesson-duration">14 min</div>
+          </div>
+        </div>
+        <button class="btn-outline">Start Path</button>
+      </div>
+
+      <div class="path-card card">
+        <div class="path-header">
+          <div class="path-icon">₿</div>
+          <div class="path-info">
+            <h3>Cryptocurrency Trading</h3>
+            <p>Dive into the world of digital assets</p>
+          </div>
+          <div class="path-progress">0%</div>
+        </div>
+        <div class="path-lessons">
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Crypto Basics</div>
+            <div class="lesson-duration">10 min</div>
+          </div>
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Blockchain Technology</div>
+            <div class="lesson-duration">12 min</div>
+          </div>
+          <div class="lesson">
+            <div class="lesson-icon">🔒</div>
+            <div class="lesson-title">Crypto Trading Strategies</div>
+            <div class="lesson-duration">16 min</div>
+          </div>
+        </div>
+        <button class="btn-outline">Start Path</button>
+      </div>
+    </section>
+
+    <section class="quick-lessons card">
+      <h3>Quick Lessons</h3>
+      <div class="lessons-grid">
+        <div class="lesson-card">
+          <div class="lesson-icon">📊</div>
+          <div class="lesson-title">Candlestick Patterns</div>
+          <div class="lesson-desc">Learn to read price action</div>
+          <div class="lesson-meta">8 min read</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon">💰</div>
+          <div class="lesson-title">Portfolio Diversification</div>
+          <div class="lesson-desc">Spread your risk wisely</div>
+          <div class="lesson-meta">6 min read</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon">📉</div>
+          <div class="lesson-title">Market Corrections</div>
+          <div class="lesson-desc">What to do when markets fall</div>
+          <div class="lesson-meta">7 min read</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon">🎯</div>
+          <div class="lesson-title">Setting Stop Losses</div>
+          <div class="lesson-desc">Protect your capital</div>
+          <div class="lesson-meta">5 min read</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon">📈</div>
+          <div class="lesson-title">Moving Averages</div>
+          <div class="lesson-desc">Trend following indicators</div>
+          <div class="lesson-meta">9 min read</div>
+        </div>
+        <div class="lesson-card">
+          <div class="lesson-icon">📰</div>
+          <div class="lesson-title">Economic Indicators</div>
+          <div class="lesson-desc">GDP, inflation, and more</div>
+          <div class="lesson-meta">11 min read</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="achievements card">
+      <h3>Your Achievements</h3>
+      <div class="achievements-grid">
+        <div class="achievement unlocked">
+          <div class="achievement-icon">🎓</div>
+          <div class="achievement-title">First Steps</div>
+          <div class="achievement-desc">Completed your first lesson</div>
+        </div>
+        <div class="achievement unlocked">
+          <div class="achievement-icon">📚</div>
+          <div class="achievement-title">Bookworm</div>
+          <div class="achievement-desc">Read 5 educational articles</div>
+        </div>
+        <div class="achievement unlocked">
+          <div class="achievement-icon">💡</div>
+          <div class="achievement-title">Enlightened</div>
+          <div class="achievement-desc">Completed fundamentals course</div>
+        </div>
+        <div class="achievement locked">
+          <div class="achievement-icon">🏆</div>
+          <div class="achievement-title">Trading Master</div>
+          <div class="achievement-desc">Complete all learning paths</div>
+        </div>
+        <div class="achievement locked">
+          <div class="achievement-icon">🚀</div>
+          <div class="achievement-title">Speed Learner</div>
+          <div class="achievement-desc">Complete 10 lessons in one week</div>
+        </div>
+        <div class="achievement locked">
+          <div class="achievement-icon">💎</div>
+          <div class="achievement-title">Diamond Trader</div>
+          <div class="achievement-desc">Achieve 90% win rate after training</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glossary card">
+      <h3>Trading Glossary</h3>
+      <div class="glossary-search">
+        <input type="text" placeholder="Search terms..." class="search-input">
+      </div>
+      <div class="glossary-terms">
+        <div class="term-item">
+          <div class="term">Bull Market</div>
+          <div class="definition">A market condition where prices are rising or expected to rise</div>
+        </div>
+        <div class="term-item">
+          <div class="term">Bear Market</div>
+          <div class="definition">A market condition where prices are falling or expected to fall</div>
+        </div>
+        <div class="term-item">
+          <div class="term">Volatility</div>
+          <div class="definition">The degree of variation of a trading price over time</div>
+        </div>
+        <div class="term-item">
+          <div class="term">Liquidity</div>
+          <div class="definition">The ease with which an asset can be bought or sold without affecting its price</div>
+        </div>
+        <div class="term-item">
+          <div class="term">Dividend</div>
+          <div class="definition">A portion of a company's earnings distributed to shareholders</div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

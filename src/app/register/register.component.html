@@ -1,0 +1,293 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <!-- Header -->
+    <div class="auth-header">
+      <div class="logo">
+        <span class="logo-icon">💰</span>
+        <span class="logo-text">SimuX</span>
+      </div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-subtitle">Sign up to start managing your budget</p>
+    </div>
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-grid">
+        <!-- Row 1: Name -->
+        <div class="form-group">
+          <label for="firstName" class="form-label">First Name</label>
+          <div class="input-container" [class.error]="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+            <span class="input-icon">👤</span>
+            <input
+              id="firstName"
+              type="text"
+              formControlName="firstName"
+              placeholder="First name"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched">
+            First name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName" class="form-label">Last Name</label>
+          <div class="input-container" [class.error]="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+            <span class="input-icon">👤</span>
+            <input
+              id="lastName"
+              type="text"
+              formControlName="lastName"
+              placeholder="Last name"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched">
+            Last name is required
+          </div>
+        </div>
+
+        <!-- Row 2: Email & Phone -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email address</label>
+          <div class="input-container" [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <span class="input-icon">📧</span>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="your@email.com"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['email']">Valid email required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phoneNumber" class="form-label">Phone Number</label>
+          <div class="input-container" [class.error]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">
+            <span class="input-icon">📱</span>
+            <input
+              id="phoneNumber"
+              type="tel"
+              formControlName="phoneNumber"
+              placeholder="+216XXXXXXXX"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched">
+            Phone number is required
+          </div>
+        </div>
+
+        <!-- Row 3: Date of Birth & Profession -->
+        <div class="form-group">
+          <label for="dateOfBirth" class="form-label">Date of Birth</label>
+          <div class="input-container" [class.error]="registerForm.get('dateOfBirth')?.invalid && registerForm.get('dateOfBirth')?.touched">
+            <span class="input-icon">📅</span>
+            <input
+              id="dateOfBirth"
+              type="date"
+              formControlName="dateOfBirth"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('dateOfBirth')?.invalid && registerForm.get('dateOfBirth')?.touched">
+            Date of birth is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="profession" class="form-label">Profession</label>
+          <div class="input-container" [class.error]="registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched">
+            <span class="input-icon">💼</span>
+            <input
+              id="profession"
+              type="text"
+              formControlName="profession"
+              placeholder="Your profession"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('profession')?.invalid && registerForm.get('profession')?.touched">
+            Profession is required
+          </div>
+        </div>
+
+        <!-- Row 4: Gender & Financial Knowledge -->
+        <div class="form-group">
+          <label for="gender" class="form-label">Gender</label>
+          <div class="input-container" [class.error]="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched">
+            <span class="input-icon">⚧</span>
+            <select
+              id="gender"
+              formControlName="gender"
+              class="form-input"
+            >
+              <option value="">Select gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+            </select>
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('gender')?.invalid && registerForm.get('gender')?.touched">
+            Gender is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="financialKnowledgeLevel" class="form-label">Financial Knowledge</label>
+          <div class="input-container" [class.error]="registerForm.get('financialKnowledgeLevel')?.invalid && registerForm.get('financialKnowledgeLevel')?.touched">
+            <span class="input-icon">📊</span>
+            <select
+              id="financialKnowledgeLevel"
+              formControlName="financialKnowledgeLevel"
+              class="form-input"
+            >
+              <option value="">Select level</option>
+              <option value="BEGINNER">Beginner</option>
+              <option value="INTERMEDIATE">Intermediate</option>
+              <option value="EXPERT">Expert</option>
+            </select>
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('financialKnowledgeLevel')?.invalid && registerForm.get('financialKnowledgeLevel')?.touched">
+            Knowledge level is required
+          </div>
+        </div>
+
+        <!-- Row 5: AI Tone Preference -->
+        <div class="form-group full-width">
+          <label for="aiTonePreference" class="form-label">AI Tone Preference</label>
+          <div class="input-container" [class.error]="registerForm.get('aiTonePreference')?.invalid && registerForm.get('aiTonePreference')?.touched">
+            <span class="input-icon">🤖</span>
+            <select
+              id="aiTonePreference"
+              formControlName="aiTonePreference"
+              class="form-input"
+            >
+              <option value="">Select preferred tone</option>
+              <option value="FORMAL">Formal</option>
+              <option value="INFORMAL">Informal</option>
+              <option value="FRIENDLY">Friendly</option>
+            </select>
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('aiTonePreference')?.invalid && registerForm.get('aiTonePreference')?.touched">
+            AI tone preference is required
+          </div>
+        </div>
+
+        <!-- Row 6: Password -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-container" [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <span class="input-icon">🔒</span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Create password"
+              class="form-input"
+            >
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required</span>
+            <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Min 10 characters</span>
+          </div>
+        </div>
+
+        <!-- Row 7: Confirm Password -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <div class="input-container" [class.error]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+            <span class="input-icon">🔒</span>
+            <input
+              id="confirmPassword"
+              type="password"
+              formControlName="confirmPassword"
+              placeholder="Confirm password"
+              class="form-input"
+            >
+          </div>
+          <div class="error-message" *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Confirm password</span>
+            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">Passwords don't match</span>
+          </div>
+        </div>
+
+        <!-- Password Strength Indicator -->
+        <div class="form-group full-width" *ngIf="registerForm.get('password')?.value">
+          <div class="password-strength">
+            <div class="strength-bar" [class]="getPasswordStrength()">
+              <div class="strength-fill"></div>
+            </div>
+            <span class="strength-text">{{ getPasswordStrengthText() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms Agreement -->
+      <div class="form-options">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="agreeToTerms">
+          <span class="checkmark"></span>
+          I agree to the <a class="terms-link" (click)="onTermsClick()">Terms</a> and <a class="terms-link" (click)="onPrivacyClick()">Privacy Policy</a>
+        </label>
+        <div class="error-message" *ngIf="registerForm.get('agreeToTerms')?.invalid && registerForm.get('agreeToTerms')?.touched">
+          You must agree to the terms
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div class="error-banner" *ngIf="errorMessage">
+        <span class="error-icon">⚠️</span>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="auth-btn primary"
+        [disabled]="registerForm.invalid || isLoading"
+        [class.loading]="isLoading"
+      >
+        <span *ngIf="!isLoading">Create Account</span>
+        <div *ngIf="isLoading" class="loading-spinner"></div>
+      </button>
+    </form>
+
+    <!-- Social Login -->
+    <div class="social-divider">
+      <span>Or sign up with</span>
+    </div>
+
+    <div class="social-buttons">
+      <button type="button" class="social-btn google" (click)="onSocialLogin('google')">
+        <span class="social-icon">🔍</span>
+        Google
+      </button>
+      <button type="button" class="social-btn apple" (click)="onSocialLogin('apple')">
+        <span class="social-icon">🍎</span>
+        Apple
+      </button>
+    </div>
+
+    <!-- Sign In Link -->
+    <div class="auth-footer">
+      <p>Already have an account? <a class="auth-link" (click)="switchToLogin()">Sign in</a></p>
+    </div>
+  </div>
+
+  <!-- Demo Banner -->
+  <div class="demo-banner" *ngIf="showDemoBanner">
+    <div class="demo-content">
+      <span class="demo-icon">🎮</span>
+      <span>Demo mode active. Registration is simplified for testing.</span>
+    </div>
+  </div>
+</div>

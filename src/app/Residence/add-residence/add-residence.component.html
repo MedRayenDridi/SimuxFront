@@ -1,0 +1,50 @@
+<form [formGroup]="residenceForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Name:</label>
+    <input formControlName="name" type="text" />
+    <div *ngIf="residenceForm.get('name')?.invalid && residenceForm.get('name')?.touched">
+      Minimum 3 characters required.
+    </div>
+  </div>
+
+  <div>
+    <label>Address:</label>
+    <input formControlName="address" type="text" />
+    <div *ngIf="residenceForm.get('address')?.invalid && residenceForm.get('address')?.touched">
+      Address is required.
+    </div>
+  </div>
+
+  <div>
+    <label>Image URL:</label>
+    <input formControlName="image" type="text" />
+    <div *ngIf="residenceForm.get('image')?.invalid && residenceForm.get('image')?.touched">
+      Enter a valid image URL (e.g., https://example.com/image.jpg).
+    </div>
+  </div>
+
+  <div>
+    <label>Status:</label>
+    <select formControlName="status">
+      <option value="Disponible">Disponible</option>
+      <option value="En Construction">En Construction</option>
+      <option value="Vendu">Vendu</option>
+    </select>
+  </div>
+
+  <h3>Apartments</h3>
+  <div formArrayName="apartments" *ngFor="let apartment of apartments.controls; let i = index">
+    <div [formGroupName]="i">
+      <label>Apartment Number:</label>
+      <input formControlName="apartmentNumber" type="text" />
+      <label>Floor Number:</label>
+      <input formControlName="floorNumber" type="text" />
+      <button type="button" (click)="removeApartment(i)">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" (click)="addApartment()">Add Apartment</button>
+  <br />
+
+  <button type="submit" [disabled]="residenceForm.invalid">Create Residence</button>
+</form>

@@ -1,0 +1,209 @@
+<div class="dashboard">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="search">
+        <input placeholder="Search crypto..." [(ngModel)]="searchTerm">
+      </div>
+      <div class="actions">
+        <button class="icon" title="Refresh" (click)="refreshData()">⟳</button>
+        <button class="icon" title="Notifications">🔔</button>
+        <div class="wallet-balance" *ngIf="wallet">
+          💰 {{ wallet.balance | number:'1.2-2' }} TND
+        </div>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-state">
+      <div class="spinner">Loading markets...</div>
+    </div>
+
+    <!-- Market Overview -->
+    <section class="market-overview" *ngIf="!loading">
+      <div class="card" *ngFor="let coin of coins.slice(0, 4)">
+        <div class="index-info">
+          <div class="coin-header">
+            <img [src]="coin.image" class="coin-icon-small" [alt]="coin.symbol">
+            <div class="index-name">{{ coin.name }}</div>
+          </div>
+          <div class="index-value">{{ coin.currentPrice | number:'1.2-2' }} TND</div>
+          <div class="index-change" [class]="coin.changeClass">
+            {{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h | number:'1.2-2' }}%
+          </div>
+        </div>
+        <div class="mini-chart">
+          <svg viewBox="0 0 100 40" class="sparkline">
+            <polyline fill="none" 
+                      [attr.stroke]="coin.changeClass === 'positive' ? '#22c55e' : '#ef4444'" 
+                      stroke-width="1.5"
+                      [attr.points]="coin.sparklineData"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-content" *ngIf="!loading">
+      <!-- Trending Section -->
+      <div class="trending-section card">
+        <div class="tabs">
+          <button class="tab" [class.active]="activeTab === 'gainers'" (click)="setActiveTab('gainers')">
+            Top Gainers
+          </button>
+          <button class="tab" [class.active]="activeTab === 'losers'" (click)="setActiveTab('losers')">
+            Top Losers
+          </button>
+          <button class="tab" [class.active]="activeTab === 'active'" (click)="setActiveTab('active')">
+            Most Active
+          </button>
+        </div>
+        
+        <div class="stocks-table">
+          <div class="table-header">
+            <div>Coin</div>
+            <div>Price</div>
+            <div>Change 24h</div>
+            <div>Change %</div>
+            <div>Volume</div>
+            <div>Actions</div>
+          </div>
+          
+          <div class="table-row" *ngFor="let coin of displayedCoins">
+            <div class="coin-cell">
+              <img [src]="coin.image" class="coin-icon" [alt]="coin.symbol">
+              <div class="coin-info-cell">
+                <span class="symbol">{{ coin.symbol.toUpperCase() }}</span>
+                <span class="coin-name-small">{{ coin.name }}</span>
+              </div>
+            </div>
+            <div class="price-cell">{{ coin.currentPrice | number:'1.2-2' }} TND</div>
+            <div [class]="coin.changeClass">
+              {{ coin.priceChange24h >= 0 ? '+' : '' }}{{ coin.priceChange24h | number:'1.2-2' }} TND
+            </div>
+            <div [class]="coin.changeClass">
+              {{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h | number:'1.2-2' }}%
+            </div>
+            <div>{{ formatVolume(coin.totalVolume || coin.total_volume || 0) }}</div>
+            <div class="actions-cell">
+              <button class="btn-sm buy-btn" (click)="openTradeModal(coin, 'BUY')">Buy</button>
+              <button class="btn-sm sell-btn" (click)="openTradeModal(coin, 'SELL')">Sell</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Market Stats -->
+      <div class="market-stats card">
+        <h3>Market Statistics</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Total Coins</div>
+            <div class="stat-value">{{ coins.length }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Top Gainers</div>
+            <div class="stat-value positive">{{ topGainers.length }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Top Losers</div>
+            <div class="stat-value negative">{{ topLosers.length }}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Your Balance</div>
+            <div class="stat-value">{{ wallet?.balance | number:'1.2-2' }} TND</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All Coins List -->
+    <section class="all-coins card" *ngIf="!loading">
+      <h3>All Cryptocurrencies</h3>
+      <div class="coins-grid">
+        <div class="coin-card" *ngFor="let coin of coins" (click)="openTradeModal(coin, 'BUY')">
+          <img [src]="coin.image" class="coin-image" [alt]="coin.name">
+          <div class="coin-details">
+            <div class="coin-name">{{ coin.name }}</div>
+            <div class="coin-symbol">{{ coin.symbol.toUpperCase() }}</div>
+            <div class="coin-price">{{ coin.currentPrice | number:'1.2-2' }} TND</div>
+            <div class="coin-change" [class]="coin.changeClass">
+              {{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h | number:'1.2-2' }}%
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Trading Modal -->
+<div class="modal-overlay" *ngIf="showTradeModal" (click)="closeTradeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ tradeType }} {{ selectedCoin?.name }}</h2>
+      <button class="close-btn" (click)="closeTradeModal()">✕</button>
+    </div>
+    
+    <div class="modal-body" *ngIf="selectedCoin">
+      <div class="coin-info-modal">
+        <img [src]="selectedCoin.image" class="coin-image-modal" [alt]="selectedCoin.name">
+        <div>
+          <div class="coin-name-modal">{{ selectedCoin.name }}</div>
+          <div class="coin-symbol-modal">{{ selectedCoin.symbol.toUpperCase() }}</div>
+        </div>
+      </div>
+
+      <div class="current-price">
+        <span class="label">Current Price:</span>
+        <span class="value">{{ selectedCoin.currentPrice | number:'1.2-2' }} TND</span>
+      </div>
+
+      <div class="wallet-balance-modal" *ngIf="wallet">
+        <span class="label">Available Balance:</span>
+        <span class="value">{{ wallet.balance | number:'1.2-2' }} TND</span>
+      </div>
+
+      <div class="trade-type-selector">
+        <button [class.active]="tradeType === 'BUY'" (click)="tradeType = 'BUY'">Buy</button>
+        <button [class.active]="tradeType === 'SELL'" (click)="tradeType = 'SELL'">Sell</button>
+      </div>
+
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" 
+               [(ngModel)]="tradeQuantity" 
+               [min]="0" 
+               [step]="0.01" 
+               placeholder="Enter quantity"
+               class="quantity-input">
+      </div>
+
+      <div class="total-section">
+        <span class="label">Total Cost:</span>
+        <span class="total-value">{{ totalTradePrice | number:'1.2-2' }} TND</span>
+      </div>
+
+      <button class="execute-btn" 
+              [class.buy]="tradeType === 'BUY'" 
+              [class.sell]="tradeType === 'SELL'"
+              [disabled]="!canTrade || tradeLoading"
+              (click)="executeTrade()">
+        <span *ngIf="!tradeLoading">{{ tradeType }} {{ selectedCoin.symbol.toUpperCase() }}</span>
+        <span *ngIf="tradeLoading">Processing...</span>
+      </button>
+
+      <div *ngIf="tradeMessage" 
+           class="trade-message" 
+           [class.success]="tradeMessage.includes('Successfully')"
+           [class.error]="!tradeMessage.includes('Successfully')">
+        {{ tradeMessage }}
+      </div>
+
+      <div *ngIf="!canTrade && tradeQuantity > 0 && tradeType === 'BUY'" class="warning-message">
+        ⚠️ Insufficient balance
+      </div>
+    </div>
+  </div>
+</div>

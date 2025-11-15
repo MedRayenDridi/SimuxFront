@@ -1,0 +1,235 @@
+<div class="landing-page">
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="logo">
+          <span class="logo-icon">💰</span>
+          <span class="logo-text">SimuX</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-link" (click)="navigateToLogin()">Sign In</button>
+        <button class="btn btn-primary" (click)="navigateToRegister()">Get Started</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          🚀 AI-Powered Financial Management
+        </div>
+        
+        <h1 class="hero-title">
+          {{ getUserGreeting() }}
+        </h1>
+        
+        <p class="hero-description">
+          {{ getUserInfo() }}
+        </p>
+
+        <div class="hero-actions" *ngIf="!isLoggedIn">
+          <button class="btn btn-primary btn-large" (click)="navigateToRegister()">
+            Start Free Trial
+          </button>
+          <button class="btn btn-secondary btn-large" (click)="navigateToLogin()">
+            Sign In
+          </button>
+        </div>
+
+        <div class="hero-actions" *ngIf="isLoggedIn">
+          <button class="btn btn-primary btn-large" (click)="navigateToDashboard()">
+            Go to Dashboard
+          </button>
+          <button class="btn btn-secondary btn-large" (click)="logout()">
+            Logout
+          </button>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-item">
+            <strong>No credit card required</strong>
+            <span>Start with our free plan</span>
+          </div>
+          <div class="stat-item">
+            <strong>Setup in 2 minutes</strong>
+            <span>Easy onboarding process</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="dashboard-preview">
+          <div class="preview-header">
+            <div class="preview-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div class="preview-content">
+            <div class="preview-chart">
+              <div class="chart-bar" style="height: 70%"></div>
+              <div class="chart-bar" style="height: 90%"></div>
+              <div class="chart-bar" style="height: 60%"></div>
+              <div class="chart-bar" style="height: 80%"></div>
+              <div class="chart-bar" style="height: 95%"></div>
+            </div>
+            <div class="preview-cards">
+              <div class="preview-card">
+                <div class="card-icon">📈</div>
+                <div class="card-content">
+                  <div class="card-value">+15%</div>
+                  <div class="card-label">Monthly Savings</div>
+                </div>
+              </div>
+              <div class="preview-card">
+                <div class="card-icon">🎯</div>
+                <div class="card-content">
+                  <div class="card-value">78%</div>
+                  <div class="card-label">Goals Progress</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card" *ngFor="let stat of stats">
+          <div class="stat-number">{{ stat.number }}</div>
+          <div class="stat-label">{{ stat.label }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Choose SimuX?</h2>
+        <p>Everything you need to master your finances, powered by artificial intelligence</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let feature of features">
+          <div class="feature-icon">{{ feature.icon }}</div>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Get started in just a few simple steps</p>
+      </div>
+      <div class="steps-container">
+        <div class="step" *ngFor="let step of steps">
+          <div class="step-number">{{ step.number }}</div>
+          <div class="step-content">
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Trusted by Thousands</h2>
+        <p>See what our users are saying about their financial transformation</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" *ngFor="let testimonial of testimonials">
+          <div class="testimonial-content">
+            "{{ testimonial.content }}"
+          </div>
+          <div class="testimonial-author">
+            <div class="author-avatar">{{ testimonial.avatar }}</div>
+            <div class="author-info">
+              <strong>{{ testimonial.name }}</strong>
+              <span>{{ testimonial.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content">
+        <h2>Ready to Transform Your Financial Life?</h2>
+        <p>Join thousands of users who have already taken control of their finances</p>
+        <div class="cta-actions">
+          <button class="btn btn-primary btn-large" (click)="navigateToRegister()">
+            Start Your Journey
+          </button>
+          <button class="btn btn-secondary btn-large" (click)="navigateToLogin()">
+            Sign In to Account
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-icon">💰</span>
+            <span class="logo-text">SimuX</span>
+          </div>
+          <p>AI-powered financial management for everyone.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <h4>Product</h4>
+            <a>Features</a>
+            <a>Pricing</a>
+            <a>Security</a>
+          </div>
+          <div class="footer-column">
+            <h4>Company</h4>
+            <a>About</a>
+            <a>Blog</a>
+            <a>Careers</a>
+          </div>
+          <div class="footer-column">
+            <h4>Support</h4>
+            <a>Help Center</a>
+            <a>Contact</a>
+            <a>Privacy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 SimuX. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Demo Controls (Remove in production) -->
+  <div class="demo-controls" *ngIf="!isLoggedIn">
+    <button class="demo-btn" (click)="simulateLogin()">🎮 Demo: Simulate Login</button>
+  </div>
+</div>

@@ -1,0 +1,282 @@
+<div class="dashboard">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-overlay">
+      <div class="spinner-container">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading dashboard...</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <ng-container *ngIf="!loading">
+      <header class="topbar">
+        <div class="search">
+          <span class="search-icon">🔍</span>
+          <input placeholder="Search stocks, crypto...">
+        </div>
+        <div class="actions">
+          <button class="icon" title="Refresh" (click)="refreshData()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 10c0-4.97-4.03-9-9-9-4.97 0-9 4.03-9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 14c0 4.97 4.03 9 9 9 4.97 0 9-4.03 9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M21 10l-4-4-4 4M3 14l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <button class="icon" title="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="notification-badge">3</span>
+          </button>
+          <div class="date-range">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
+              <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            {{ currentMonth }}
+          </div>
+          <div class="avatar">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="8" r="5" stroke="currentColor" stroke-width="2"/>
+              <path d="M20 21a8 8 0 00-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- Metrics Cards with Enhanced Design -->
+      <section class="metrics">
+        <div class="card primary">
+          <div class="card-icon">💰</div>
+          <div class="card-content">
+            <div class="label">Portfolio Value</div>
+            <div class="value-wrapper">
+              <span class="value">{{ metrics.portfolioValue | number:'1.2-2' }}</span>
+              <span class="currency">TND</span>
+            </div>
+            <div class="sub">from last month</div>
+            <div class="trend-wrapper">
+              <span class="trend" [class.positive]="metrics.portfolioChange >= 0" 
+                    [class.negative]="metrics.portfolioChange < 0">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path [attr.d]="metrics.portfolioChange >= 0 ? 'M12 19V5M5 12l7-7 7 7' : 'M12 5v14M5 12l7 7 7-7'" 
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ metrics.portfolioChange >= 0 ? '+' : '' }}{{ metrics.portfolioChange | number:'1.1-1' }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-content">
+            <div class="label">Total Profit/Loss</div>
+            <div class="value-wrapper">
+              <span class="value" [class.positive]="metrics.totalProfitLoss >= 0" 
+                    [class.negative]="metrics.totalProfitLoss < 0">
+                {{ metrics.totalProfitLoss >= 0 ? '+' : '' }}{{ metrics.totalProfitLoss | number:'1.2-2' }}
+              </span>
+              <span class="currency">TND</span>
+            </div>
+            <div class="sub">from last month</div>
+            <div class="trend-wrapper">
+              <span class="trend" [class.positive]="metrics.plChange >= 0" 
+                    [class.negative]="metrics.plChange < 0">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path [attr.d]="metrics.plChange >= 0 ? 'M12 19V5M5 12l7-7 7 7' : 'M12 5v14M5 12l7 7 7-7'" 
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ metrics.plChange >= 0 ? '+' : '' }}{{ metrics.plChange | number:'1.1-1' }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📈</div>
+          <div class="card-content">
+            <div class="label">Active Positions</div>
+            <div class="value-wrapper">
+              <span class="value">{{ metrics.activePositions }}</span>
+            </div>
+            <div class="sub">from last month</div>
+            <div class="trend-wrapper">
+              <span class="trend" [class.positive]="metrics.positionsChange >= 0" 
+                    [class.negative]="metrics.positionsChange < 0">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path [attr.d]="metrics.positionsChange >= 0 ? 'M12 19V5M5 12l7-7 7 7' : 'M12 5v14M5 12l7 7 7-7'" 
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ metrics.positionsChange >= 0 ? '+' : '' }}{{ metrics.positionsChange | number:'1.1-1' }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🎯</div>
+          <div class="card-content">
+            <div class="label">Win Rate</div>
+            <div class="value-wrapper">
+              <span class="value">{{ metrics.winRate | number:'1.0-0' }}</span>
+              <span class="currency">%</span>
+            </div>
+            <div class="sub">from last month</div>
+            <div class="trend-wrapper">
+              <span class="trend" [class.positive]="metrics.winRateChange >= 0" 
+                    [class.negative]="metrics.winRateChange < 0">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path [attr.d]="metrics.winRateChange >= 0 ? 'M12 19V5M5 12l7-7 7 7' : 'M12 5v14M5 12l7 7 7-7'" 
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ metrics.winRateChange >= 0 ? '+' : '' }}{{ metrics.winRateChange | number:'1.1-1' }}%
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Grid -->
+      <section class="main-grid">
+        <div class="chart card">
+          <div class="chart-header">
+            <div class="title">
+              <span class="title-icon">📊</span>
+              Portfolio Performance
+            </div>
+            <div class="tabs">
+              <button class="tab" [class.active]="selectedPeriod === 'day'" (click)="selectPeriod('day')">Day</button>
+              <button class="tab" [class.active]="selectedPeriod === 'week'" (click)="selectPeriod('week')">Week</button>
+              <button class="tab" [class.active]="selectedPeriod === 'month'" (click)="selectPeriod('month')">Month</button>
+              <button class="tab" [class.active]="selectedPeriod === 'year'" (click)="selectPeriod('year')">Year</button>
+            </div>
+          </div>
+          <div class="chart-body">
+            <div class="y-axis">
+              <span>20k</span>
+              <span>10k</span>
+              <span>0</span>
+            </div>
+            <div class="bars">
+              <div class="bar" 
+                   *ngFor="let data of performanceData.slice(0, 6)" 
+                   [title]="data.month + ': ' + (data.value | number:'1.0-0') + ' TND'" 
+                   [style.height]="getBarHeight(data.value)">
+                <div class="bar-tooltip">{{ data.value | number:'1.0-0' }} TND</div>
+              </div>
+            </div>
+            <div class="x-axis">
+              <span *ngFor="let data of performanceData.slice(0, 6)">{{ data.month }}</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="right panel">
+          <div class="calendar card">
+            <div class="calendar-header">
+              <span class="calendar-icon">📅</span>
+              {{ currentMonth }}
+            </div>
+            <div class="calendar-grid">
+              <span *ngFor="let d of [].constructor(35); let i = index" 
+                    class="calendar-cell" 
+                    [class.today]="i === 9">
+                <span class="calendar-day">{{ i + 1 }}</span>
+              </span>
+            </div>
+          </div>
+          <div class="progress card">
+            <div class="label">
+              <span class="label-icon">💵</span>
+              Cash Available
+            </div>
+            <div class="circle">
+              <div class="inner">
+                <div class="inner-value">{{ wallet?.balance | number:'1.0-0' }}</div>
+                <div class="inner-label">TND</div>
+              </div>
+            </div>
+            <div class="sub center">Available to trade</div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- Recent Trades Table -->
+      <section class="table card">
+        <div class="table-title">
+          <div>
+            <span class="title-icon">🕒</span>
+            Recent Trades
+            <span class="trades-count">({{ recentTrades.length }})</span>
+          </div>
+          <button class="icon" (click)="refreshData()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 10c0-4.97-4.03-9-9-9-4.97 0-9 4.03-9 9M3 14c0 4.97 4.03 9 9 9 4.97 0 9-4.03 9-9" 
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="recentTrades.length === 0" class="empty-state">
+          <div class="empty-icon">📊</div>
+          <div class="empty-text">No trades yet</div>
+          <div class="empty-subtext">Start trading to see your history here</div>
+          <button class="btn-primary" routerLink="/markets">Explore Markets</button>
+        </div>
+
+        <!-- Table Content -->
+        <div *ngIf="recentTrades.length > 0">
+          <div class="table-header sortable">
+            <div>Symbol</div>
+            <div>Trade Type</div>
+            <div>Quantity</div>
+            <div>Entry Price</div>
+            <div>Current Price</div>
+            <div>Profit/Loss</div>
+            <div>Status</div>
+          </div>
+          <div class="row" *ngFor="let trade of recentTrades">
+            <div class="symbol-cell">
+              <img *ngIf="trade.orderItem?.coin?.image" 
+                   [src]="trade.orderItem.coin.image" 
+                   class="coin-icon-small" 
+                   [alt]="trade.orderItem.coin.symbol">
+              <div class="symbol-info">
+                <div class="symbol-name">{{ trade.orderItem?.coin?.symbol?.toUpperCase() || 'N/A' }}</div>
+                <div class="symbol-fullname">{{ trade.orderItem?.coin?.name }}</div>
+              </div>
+            </div>
+            <div>
+              <span class="badge" [class.buy]="trade.orderType === 'BUY'" [class.sell]="trade.orderType === 'SELL'">
+                {{ trade.orderType }}
+              </span>
+            </div>
+            <div class="quantity-cell">{{ trade.orderItem?.quantity | number:'1.4-4' }}</div>
+            <div class="price-cell">{{ (trade.orderItem?.buyPrice || trade.orderItem?.sellPrice || 0) | number:'1.2-2' }} TND</div>
+            <div class="price-cell">{{ trade.currentPrice | number:'1.2-2' }} TND</div>
+            <div class="pl-cell">
+              <span [class.pos]="trade.profitLoss >= 0" [class.neg]="trade.profitLoss < 0">
+                {{ trade.profitLoss >= 0 ? '+' : '' }}{{ trade.profitLoss | number:'1.2-2' }} TND
+              </span>
+              <span class="pl-percent" [class.pos]="trade.profitLossPercent >= 0" [class.neg]="trade.profitLossPercent < 0">
+                ({{ trade.profitLossPercent >= 0 ? '+' : '' }}{{ trade.profitLossPercent | number:'1.1-1' }}%)
+              </span>
+            </div>
+            <div>
+              <span class="badge" [ngClass]="getStatusBadgeClass(trade.status)">
+                {{ getStatusLabel(trade.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </main>
+</div>

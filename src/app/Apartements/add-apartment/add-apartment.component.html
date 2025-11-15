@@ -1,0 +1,57 @@
+<form [formGroup]="apartForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label>Apartment Number:</label>
+      <input formControlName="apartNum" type="text" />
+      <div *ngIf="apartForm.get('apartNum')?.invalid && apartForm.get('apartNum')?.touched">
+        Only digits are allowed.
+      </div>
+    </div>
+  
+    <div>
+      <label>Floor Number:</label>
+      <input formControlName="floorNum" type="text" />
+      <div *ngIf="apartForm.get('floorNum')?.invalid && apartForm.get('floorNum')?.touched">
+        Only digits are allowed.
+      </div>
+    </div>
+  
+    <div>
+      <label>Surface:</label>
+      <input formControlName="surface" type="text" />
+      <div *ngIf="apartForm.get('surface')?.invalid && apartForm.get('surface')?.touched">
+        Surface is required.
+      </div>
+    </div>
+  
+    <div>
+      <label>Terrace:</label>
+      <input type="checkbox" formControlName="terrace" />
+    </div>
+  
+    <div *ngIf="apartForm.get('terrace')?.value">
+      <label>Surface Terrace:</label>
+      <input formControlName="surfaceterrace" type="text" />
+      <div *ngIf="apartForm.get('surfaceterrace')?.invalid && apartForm.get('surfaceterrace')?.touched">
+        Surface Terrace is required if Terrace is checked.
+      </div>
+    </div>
+  
+    <div>
+      <label>Category:</label>
+      <input formControlName="category" type="text" />
+      <div *ngIf="apartForm.get('category')?.invalid && apartForm.get('category')?.touched">
+        Category is required.
+      </div>
+    </div>
+  
+    <div>
+      <label>Residence ID:</label>
+      <input formControlName="residenceId" type="text" />
+      <div *ngIf="apartForm.get('residenceId')?.invalid && apartForm.get('residenceId')?.touched">
+        Residence ID is required.
+      </div>
+    </div>
+  
+    <button type="submit" [disabled]="apartForm.invalid">Add Apartment</button>
+  </form>
+  

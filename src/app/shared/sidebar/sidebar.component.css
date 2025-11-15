@@ -1,0 +1,364 @@
+/* ============================================
+   MODERN ELEGANT SIDEBAR - FIXED POSITION
+   ============================================ */
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 280px;
+  background: linear-gradient(180deg, var(--color-primary, #14301f) 0%, #0f2318 100%);
+  color: var(--color-primary-contrast, #fef4e2);
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  padding: 24px 20px;
+  gap: 24px;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(254, 244, 226, 0.05);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(254, 244, 226, 0.2);
+  border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(254, 244, 226, 0.3);
+}
+
+/* ============================================
+   BRAND SECTION
+   ============================================ */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  background: rgba(254, 244, 226, 0.08);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.brand:hover {
+  background: rgba(254, 244, 226, 0.12);
+  transform: translateX(2px);
+}
+
+.brand .logo {
+  background: var(--color-primary-contrast, #fef4e2);
+  color: var(--color-primary, #14301f);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(254, 244, 226, 0.3);
+}
+
+.brand .logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.brand .text {
+  color: var(--color-primary-contrast, #fef4e2);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+/* ============================================
+   MENU SECTION
+   ============================================ */
+
+.menu {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+}
+
+.menu-item {
+  background: transparent;
+  color: rgba(254, 244, 226, 0.85);
+  border: 1px solid rgba(254, 244, 226, 0.08);
+  padding: 14px 16px;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: var(--color-primary-contrast, #fef4e2);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.menu-item:hover::before,
+.menu-item.active::before {
+  transform: scaleY(1);
+}
+
+.menu-item .icon {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.menu-item .icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-item .label {
+  flex: 1;
+}
+
+.menu-item:hover {
+  background: rgba(254, 244, 226, 0.12);
+  border-color: rgba(254, 244, 226, 0.2);
+  color: var(--color-primary-contrast, #fef4e2);
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.menu-item:hover .icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.menu-item.active {
+  background: rgba(254, 244, 226, 0.15);
+  border-color: rgba(254, 244, 226, 0.3);
+  color: var(--color-primary-contrast, #fef4e2);
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item.active .icon {
+  transform: scale(1.1);
+}
+
+/* Small menu items */
+.menu-item.small {
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.menu-item.small .icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Logout button special styling */
+.menu-item.logout {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.menu-item.logout:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ff6b6b;
+}
+
+/* ============================================
+   UPGRADE SECTION
+   ============================================ */
+
+.upgrade {
+  padding: 0;
+  margin: 8px 0;
+}
+
+.upgrade-card {
+  background: linear-gradient(135deg, rgba(254, 244, 226, 0.15) 0%, rgba(254, 244, 226, 0.08) 100%);
+  border: 1px solid rgba(254, 244, 226, 0.25);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.upgrade-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(254, 244, 226, 0.1) 0%, transparent 70%);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+.upgrade-card:hover {
+  background: linear-gradient(135deg, rgba(254, 244, 226, 0.2) 0%, rgba(254, 244, 226, 0.12) 100%);
+  border-color: rgba(254, 244, 226, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.upgrade-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.1) rotate(-10deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(10deg);
+  }
+}
+
+.upgrade-content {
+  position: relative;
+  z-index: 1;
+}
+
+.upgrade-content .title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 15px;
+  color: var(--color-primary-contrast, #fef4e2);
+}
+
+.upgrade-content .desc {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  color: rgba(254, 244, 226, 0.9);
+}
+
+.btn-outline {
+  background: var(--color-primary-contrast, #fef4e2);
+  color: var(--color-primary, #14301f);
+  border: none;
+  border-radius: 999px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-outline svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(254, 244, 226, 0.4);
+}
+
+.btn-outline:hover svg {
+  transform: translateX(4px);
+}
+
+/* ============================================
+   BOTTOM SECTION
+   ============================================ */
+
+.bottom {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid rgba(254, 244, 226, 0.15);
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menu-item {
+  animation: slideIn 0.4s ease forwards;
+}
+
+.menu-item:nth-child(1) { animation-delay: 0.05s; }
+.menu-item:nth-child(2) { animation-delay: 0.1s; }
+.menu-item:nth-child(3) { animation-delay: 0.15s; }
+.menu-item:nth-child(4) { animation-delay: 0.2s; }
+.menu-item:nth-child(5) { animation-delay: 0.25s; }
+.menu-item:nth-child(6) { animation-delay: 0.3s; }
+.menu-item:nth-child(7) { animation-delay: 0.35s; }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}

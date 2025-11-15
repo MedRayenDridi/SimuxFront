@@ -1,0 +1,242 @@
+<div class="dashboard">
+  <app-sidebar></app-sidebar>
+
+  <main class="content">
+    <header class="topbar">
+      <div class="search">
+        <input 
+          placeholder="Search coins..." 
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="searchCoins()">
+      </div>
+      <div class="actions">
+        <button class="icon" title="Refresh" (click)="refreshData()">⟳</button>
+        <button class="icon" title="Notifications">🔔</button>
+        <div class="date-range">{{ 'now' | date:'d MMM yyyy' }}</div>
+        <div class="avatar">👤</div>
+      </div>
+    </header>
+
+    <section class="watchlist-header">
+      <div class="tabs">
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'watchlist'"
+          (click)="setActiveTab('watchlist')">
+          My Watchlist
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'trending'"
+          (click)="setActiveTab('trending')">
+          Trending
+        </button>
+        <button 
+          class="tab" 
+          [class.active]="activeTab === 'crypto'"
+          (click)="setActiveTab('crypto')">
+          All Crypto
+        </button>
+      </div>
+    </section>
+
+    <div *ngIf="loading" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Loading coins...</p>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      <p>{{ error }}</p>
+      <button (click)="refreshData()" class="btn-primary">Retry</button>
+    </div>
+
+    <section class="watchlist-table card" *ngIf="!loading && !error">
+      <div class="table-container">
+        <div class="table-header">
+          <div>#</div>
+          <div>Coin</div>
+          <div>Price</div>
+          <div>24h Change</div>
+          <div>24h Volume</div>
+          <div>Market Cap</div>
+          <div>Last 7 Days</div>
+          <div>Actions</div>
+        </div>
+
+        <!-- Watchlist Tab -->
+        <ng-container *ngIf="activeTab === 'watchlist'">
+          <div class="table-row" *ngFor="let coin of watchlistCoins">
+            <div class="rank">{{ coin.marketCapRank }}</div>
+            <div class="coin-info">
+              <img [src]="coin.image" [alt]="coin.name" class="coin-logo">
+              <div class="coin-details">
+                <div class="coin-name">{{ coin.name }}</div>
+                <div class="coin-symbol">{{ coin.symbol?.toUpperCase() }}</div>
+              </div>
+            </div>
+            <div class="price">${{ formatPrice(coin.currentPrice) }}</div>
+            <div [class]="coin.priceChangePercentage24h >= 0 ? 'positive' : 'negative'">
+              <div>{{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h?.toFixed(2) }}%</div>
+              <div class="change-value">{{ coin.priceChange24h >= 0 ? '+' : '' }}${{ coin.priceChange24h?.toFixed(2) }}</div>
+            </div>
+            <div class="volume">{{ formatNumber(coin.totalVolume) }}</div>
+            <div class="market-cap">{{ formatNumber(coin.marketCap) }}</div>
+            <div class="mini-chart">
+              <svg viewBox="0 0 60 30" class="sparkline">
+                <polyline 
+                  fill="none" 
+                  [attr.stroke]="coin.priceChangePercentage24h >= 0 ? '#22c55e' : '#ef4444'" 
+                  stroke-width="1.5"
+                  points="0,25 10,20 20,22 30,15 40,18 50,12 60,10"/>
+              </svg>
+            </div>
+            <div class="actions">
+              <button class="btn-sm remove" (click)="removeFromWatchlist(coin.id)">Remove</button>
+            </div>
+          </div>
+          <div *ngIf="watchlistCoins.length === 0" class="empty-state">
+            <div class="empty-icon">⭐</div>
+            <p>No coins in your watchlist yet.</p>
+            <p class="empty-subtitle">Add some from the "All Crypto" or "Trending" tabs!</p>
+          </div>
+        </ng-container>
+
+        <!-- Trending Tab (Using Top 50) -->
+        <ng-container *ngIf="activeTab === 'trending'">
+          <div class="trending-notice">
+            <span class="fire-icon">🔥</span>
+            <span>Top 50 Cryptocurrencies by Market Cap</span>
+          </div>
+          
+          <div class="table-row" *ngFor="let coin of coins">
+            <div class="rank">
+              <span class="rank-badge">{{ coin.marketCapRank }}</span>
+            </div>
+            <div class="coin-info">
+              <img [src]="coin.image" [alt]="coin.name" class="coin-logo">
+              <div class="coin-details">
+                <div class="coin-name">{{ coin.name }}</div>
+                <div class="coin-symbol">{{ coin.symbol?.toUpperCase() }}</div>
+              </div>
+            </div>
+            <div class="price">${{ formatPrice(coin.currentPrice) }}</div>
+            <div [class]="coin.priceChangePercentage24h >= 0 ? 'positive' : 'negative'">
+              <div>{{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h?.toFixed(2) }}%</div>
+              <div class="change-value">{{ coin.priceChange24h >= 0 ? '+' : '' }}${{ coin.priceChange24h?.toFixed(2) }}</div>
+            </div>
+            <div class="volume">{{ formatNumber(coin.totalVolume) }}</div>
+            <div class="market-cap">{{ formatNumber(coin.marketCap) }}</div>
+            <div class="mini-chart">
+              <svg viewBox="0 0 60 30" class="sparkline">
+                <polyline 
+                  fill="none" 
+                  [attr.stroke]="coin.priceChangePercentage24h >= 0 ? '#22c55e' : '#ef4444'" 
+                  stroke-width="1.5"
+                  points="0,25 10,20 20,22 30,15 40,18 50,12 60,10"/>
+              </svg>
+            </div>
+            <div class="actions">
+              <button 
+                class="btn-sm" 
+                *ngIf="!coin.isInWatchlist"
+                (click)="addToWatchlist(coin)">
+                Add to Watchlist
+              </button>
+              <button 
+                class="btn-sm added" 
+                *ngIf="coin.isInWatchlist"
+                disabled>
+                ✓ In Watchlist
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- All Crypto Tab -->
+        <ng-container *ngIf="activeTab === 'crypto'">
+          <div class="table-row" *ngFor="let coin of coins">
+            <div class="rank">{{ coin.marketCapRank }}</div>
+            <div class="coin-info">
+              <img [src]="coin.image" [alt]="coin.name" class="coin-logo">
+              <div class="coin-details">
+                <div class="coin-name">{{ coin.name }}</div>
+                <div class="coin-symbol">{{ coin.symbol?.toUpperCase() }}</div>
+              </div>
+            </div>
+            <div class="price">${{ formatPrice(coin.currentPrice) }}</div>
+            <div [class]="coin.priceChangePercentage24h >= 0 ? 'positive' : 'negative'">
+              <div>{{ coin.priceChangePercentage24h >= 0 ? '+' : '' }}{{ coin.priceChangePercentage24h?.toFixed(2) }}%</div>
+              <div class="change-value">{{ coin.priceChange24h >= 0 ? '+' : '' }}${{ coin.priceChange24h?.toFixed(2) }}</div>
+            </div>
+            <div class="volume">{{ formatNumber(coin.totalVolume) }}</div>
+            <div class="market-cap">{{ formatNumber(coin.marketCap) }}</div>
+            <div class="mini-chart">
+              <svg viewBox="0 0 60 30" class="sparkline">
+                <polyline 
+                  fill="none" 
+                  [attr.stroke]="coin.priceChangePercentage24h >= 0 ? '#22c55e' : '#ef4444'" 
+                  stroke-width="1.5"
+                  points="0,25 10,20 20,22 30,15 40,18 50,12 60,10"/>
+              </svg>
+            </div>
+            <div class="actions">
+              <button 
+                class="btn-sm" 
+                *ngIf="!coin.isInWatchlist"
+                (click)="addToWatchlist(coin)">
+                Add to Watchlist
+              </button>
+              <button 
+                class="btn-sm added" 
+                *ngIf="coin.isInWatchlist"
+                disabled>
+                ✓ In Watchlist
+              </button>
+            </div>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="pagination">
+            <button class="btn-pagination" [disabled]="currentPage === 1" (click)="prevPage()">
+              ← Previous
+            </button>
+            <span class="page-info">Page {{ currentPage }}</span>
+            <button class="btn-pagination" (click)="nextPage()">
+              Next →
+            </button>
+          </div>
+        </ng-container>
+      </div>
+    </section>
+
+    <section class="quick-actions card">
+      <h3>Quick Actions</h3>
+      <div class="actions-grid">
+        <div class="action-card" (click)="setActiveTab('crypto')">
+          <div class="action-icon">🔍</div>
+          <div class="action-title">Search Coins</div>
+          <div class="action-desc">Find any cryptocurrency</div>
+          <button class="btn-primary">Browse All</button>
+        </div>
+        <div class="action-card" (click)="setActiveTab('trending')">
+          <div class="action-icon">🔥</div>
+          <div class="action-title">Top Coins</div>
+          <div class="action-desc">Most popular coins today</div>
+          <button class="btn-outline">View Top 50</button>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">📊</div>
+          <div class="action-title">Market Analysis</div>
+          <div class="action-desc">Deep dive into data</div>
+          <button class="btn-outline">Analyze</button>
+        </div>
+        <div class="action-card">
+          <div class="action-icon">⚡</div>
+          <div class="action-title">Quick Trade</div>
+          <div class="action-desc">Start trading instantly</div>
+          <button class="btn-outline">Trade Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
