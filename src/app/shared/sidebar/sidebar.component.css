@@ -1,4 +1,52 @@
 /* ============================================
+   CURRENCY TOGGLE SECTION
+   ============================================ */
+
+.currency-toggle {
+  padding: 0;
+  margin: 8px 0;
+}
+
+.currency-btn {
+  background: rgba(254, 244, 226, 0.1);
+  color: var(--color-primary-contrast, #fef4e2);
+  border: 1px solid rgba(254, 244, 226, 0.2);
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.currency-btn:hover {
+  background: rgba(254, 244, 226, 0.15);
+  border-color: rgba(254, 244, 226, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.currency-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.currency-text {
+  flex: 1;
+  text-align: center;
+}
+
+.toggle-arrow {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* ============================================
    MODERN ELEGANT SIDEBAR - FIXED POSITION
    ============================================ */
 

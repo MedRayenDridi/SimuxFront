@@ -23,7 +23,7 @@
     <section class="portfolio-summary">
       <div class="card primary">
         <div class="label">Total Portfolio Value</div>
-        <div class="value">{{ portfolioStats.totalValue | number:'1.2-2' }} TND</div>
+        <div class="value">{{ portfolioStats.totalValue | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
         <div class="sub">Live balance</div>
         <div class="trend" [class.positive]="portfolioStats.todayPLPercent >= 0" 
              [class.negative]="portfolioStats.todayPLPercent < 0">
@@ -33,25 +33,25 @@
       </div>
       <div class="card">
         <div class="label">Cash Available</div>
-        <div class="value">{{ portfolioStats.cashAvailable | number:'1.2-2' }} TND</div>
+        <div class="value">{{ portfolioStats.cashAvailable | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
         <div class="sub">Available to trade</div>
         <div class="trend neutral">—</div>
       </div>
       <div class="card">
         <div class="label">Invested Amount</div>
-        <div class="value">{{ portfolioStats.investedAmount | number:'1.2-2' }} TND</div>
+        <div class="value">{{ portfolioStats.investedAmount | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
         <div class="sub">Current holdings value</div>
-        <div class="trend" [class.positive]="portfolioStats.todayPL >= 0" 
+        <div class="trend" [class.positive]="portfolioStats.todayPL >= 0"
              [class.negative]="portfolioStats.todayPL < 0">
-          {{ portfolioStats.todayPL >= 0 ? '▲' : '▼' }} 
-          {{ portfolioStats.todayPL | number:'1.2-2' }} TND
+          {{ portfolioStats.todayPL >= 0 ? '▲' : '▼' }}
+          {{ portfolioStats.todayPL | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}
         </div>
       </div>
       <div class="card">
         <div class="label">Total P/L</div>
-        <div class="value" [class.positive]="portfolioStats.todayPL >= 0" 
+        <div class="value" [class.positive]="portfolioStats.todayPL >= 0"
              [class.negative]="portfolioStats.todayPL < 0">
-          {{ portfolioStats.todayPL | number:'1.2-2' }} TND
+          {{ portfolioStats.todayPL | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}
         </div>
         <div class="sub">Unrealized gains/losses</div>
         <div class="trend" [class.positive]="portfolioStats.todayPLPercent >= 0" 
@@ -104,11 +104,11 @@
             </div>
             <div class="name-cell">{{ holding.coin.name }}</div>
             <div>{{ holding.quantity | number:'1.2-6' }}</div>
-            <div>{{ holding.buyPrice | number:'1.2-2' }} TND</div>
-            <div>{{ holding.currentPrice | number:'1.2-2' }} TND</div>
-            <div class="market-value">{{ holding.marketValue | number:'1.2-2' }} TND</div>
+            <div>{{ holding.buyPriceConverted | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
+            <div>{{ holding.currentPrice | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
+            <div class="market-value">{{ holding.marketValue | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}</div>
             <div [class.positive]="holding.totalPL >= 0" [class.negative]="holding.totalPL < 0">
-              {{ holding.totalPL >= 0 ? '+' : '' }}{{ holding.totalPL | number:'1.2-2' }} TND
+              {{ holding.totalPL >= 0 ? '+' : '' }}{{ holding.totalPL | number:'1.2-2' }} {{ currencyService.getCurrencySymbol() }}
             </div>
             <div [class.positive]="holding.plPercent >= 0" [class.negative]="holding.plPercent < 0">
               {{ holding.plPercent >= 0 ? '+' : '' }}{{ holding.plPercent | number:'1.2-2' }}%
@@ -127,7 +127,7 @@
         <div class="chart-container">
           <div class="pie-chart-wrapper">
             <div class="pie-center">
-              <div class="total">{{ portfolioStats.investedAmount | number:'1.0-0' }} TND</div>
+              <div class="total">{{ portfolioStats.investedAmount | number:'1.0-0' }} {{ currencyService.getCurrencySymbol() }}</div>
               <div class="label">Invested</div>
             </div>
           </div>

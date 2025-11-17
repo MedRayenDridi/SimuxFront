@@ -4,6 +4,7 @@ import { Wallet, WalletService } from '../../services/wallet.service';
 import { Asset, AssetService } from '../../services/asset.service';
 import { Order, OrderService } from '../../services/order.service';
 import { CoinService } from '../../services/coin.service';
+import { CurrencyService } from '../../services/currency.service';
 
 interface PortfolioStats {
   totalValue: number;
@@ -18,6 +19,7 @@ interface HoldingWithStats extends Asset {
   marketValue: number;
   totalPL: number;
   plPercent: number;
+  buyPriceConverted: number;
 }
 
 @Component({
@@ -47,26 +49,36 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   worstPerformer: string = '-';
   
   private refreshSubscription?: Subscription;
+  private currencySubscription?: Subscription;
 
   constructor(
     private walletService: WalletService,
     private assetService: AssetService,
     private orderService: OrderService,
-    private coinService: CoinService
+    private coinService: CoinService,
+    public currencyService: CurrencyService
   ) {}
 
   ngOnInit(): void {
     this.loadAllData();
-    
+
     // Auto-refresh every 30 seconds
     this.refreshSubscription = interval(30000).subscribe(() => {
       this.refreshData();
+    });
+
+    // Subscribe to currency changes
+    this.currencySubscription = this.currencyService.currentCurrency$.subscribe(() => {
+      this.recalculateWithCurrency();
     });
   }
 
   ngOnDestroy(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
+    }
+    if (this.currencySubscription) {
+      this.currencySubscription.unsubscribe();
     }
   }
 
@@ -113,17 +125,19 @@ export class PortfolioComponent implements OnInit, OnDestroy {
     }
 
     this.holdings = this.assets.map(asset => {
-      const currentPrice = asset.coin.currentPrice || asset.coin.current_price || 0;
+      const currentPrice = this.currencyService.convertToCurrent(asset.coin.currentPrice || asset.coin.current_price || 0);
+      const buyPriceConverted = this.currencyService.convertToCurrent(asset.buyPrice);
       const marketValue = currentPrice * asset.quantity;
-      const totalPL = marketValue - (asset.buyPrice * asset.quantity);
-      const plPercent = ((currentPrice - asset.buyPrice) / asset.buyPrice) * 100;
+      const totalPL = marketValue - (buyPriceConverted * asset.quantity);
+      const plPercent = buyPriceConverted > 0 ? ((currentPrice - buyPriceConverted) / buyPriceConverted) * 100 : 0;
 
       return {
         ...asset,
         currentPrice,
         marketValue,
         totalPL,
-        plPercent
+        plPercent,
+        buyPriceConverted
       };
     });
 
@@ -143,15 +157,16 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   }
 
   calculatePortfolioStats(): void {
-    const investedAmount = this.holdings.reduce((sum, h) => sum + (h.buyPrice * h.quantity), 0);
+    const investedAmount = this.holdings.reduce((sum, h) => sum + (h.buyPriceConverted * h.quantity), 0);
     const currentValue = this.holdings.reduce((sum, h) => sum + h.marketValue, 0);
     const totalPL = currentValue - investedAmount;
     const plPercent = investedAmount > 0 ? (totalPL / investedAmount) * 100 : 0;
+    const cashAvailable = this.currencyService.convertToCurrent(this.wallet?.balance || 0);
 
     this.portfolioStats = {
-      totalValue: currentValue + (this.wallet?.balance || 0),
-      cashAvailable: this.wallet?.balance || 0,
-      investedAmount: currentValue,
+      totalValue: currentValue + cashAvailable,
+      cashAvailable: cashAvailable,
+      investedAmount: investedAmount,
       todayPL: totalPL,
       todayPLPercent: plPercent
     };
@@ -172,6 +187,11 @@ export class PortfolioComponent implements OnInit, OnDestroy {
         this.processAssets();
       }
     });
+  }
+
+  recalculateWithCurrency(): void {
+    this.processAssets();
+    this.calculatePortfolioStats();
   }
 
   get filteredHoldings(): HoldingWithStats[] {

@@ -1,233 +1,394 @@
 <div class="dashboard">
-  <aside class="sidebar">
-    <div class="brand">
-      <span class="logo">📈</span>
-      <span class="text">TradeSim</span>
-    </div>
-    <nav class="menu">
-      <button class="menu-item" routerLink="/dashboard" routerLinkActive="active">🏠 Dashboard</button>
-      <button class="menu-item" routerLink="/portfolio" routerLinkActive="active">💼 Portfolio</button>
-      <button class="menu-item" routerLink="/markets" routerLinkActive="active">📊 Markets</button>
-      <button class="menu-item" routerLink="/watchlist" routerLinkActive="active">⭐ Watchlist</button>
-      <button class="menu-item" routerLink="/trade-history" routerLinkActive="active">🕒 Trade History</button>
-      <button class="menu-item active" routerLink="/leaderboard" routerLinkActive="active">🏆 Leaderboard</button>
-      <button class="menu-item" routerLink="/learning" routerLinkActive="active">📚 Learning Center</button>
-    </nav>
-    <div class="upgrade">
-      <div class="card">
-        <div class="title">Upgrade to Premium</div>
-        <div class="desc">Unlock advanced analytics & realtime data</div>
-        <button class="btn-outline">Upgrade now</button>
-      </div>
-    </div>
-    <div class="bottom">
-      <button class="menu-item">⚙️ Settings</button>
-      <button class="menu-item">❓ Help Center</button>
-      <button class="menu-item">🚪 Log out</button>
-    </div>
-  </aside>
+  <app-sidebar></app-sidebar>
 
   <main class="content">
+    <!-- Topbar -->
     <header class="topbar">
       <div class="search">
-        <input placeholder="Search stocks, crypto...">
+        <input placeholder="Search traders..." [(ngModel)]="searchQuery" (input)="filterTraders()">
       </div>
       <div class="actions">
-        <button class="icon" title="Refresh">⟳</button>
+        <button class="icon" title="Refresh" (click)="loadLeaderboardData()">⟳</button>
         <button class="icon" title="Notifications">🔔</button>
-        <div class="date-range">1 Sep 2024 - 31 Sep 2024</div>
+        <div class="date-range">{{currentUser?.username || 'Loading...'}}</div>
         <div class="avatar">👤</div>
       </div>
     </header>
 
-    <section class="time-tabs">
-      <button class="tab active">Daily</button>
-      <button class="tab">Weekly</button>
-      <button class="tab">Monthly</button>
-      <button class="tab">All-Time</button>
+    <!-- Competition Stats Banner -->
+    <section class="competition-banner card" *ngIf="!loading">
+      <div class="banner-content">
+        <div class="banner-stat">
+          <div class="banner-icon">👥</div>
+          <div class="banner-info">
+            <div class="banner-label">Total Traders</div>
+            <div class="banner-value">{{globalLeaderboard.length}}</div>
+          </div>
+        </div>
+        <div class="banner-stat">
+          <div class="banner-icon">🏆</div>
+          <div class="banner-info">
+            <div class="banner-label">Your Rank</div>
+            <div class="banner-value">#{{currentUser?.rank || 'N/A'}}</div>
+          </div>
+        </div>
+        <div class="banner-stat">
+          <div class="banner-icon">📊</div>
+          <div class="banner-info">
+            <div class="banner-label">Your Percentile</div>
+            <div class="banner-value">Top {{currentUser?.percentile || 0}}%</div>
+          </div>
+        </div>
+        <div class="banner-stat">
+          <div class="banner-icon">💰</div>
+          <div class="banner-info">
+            <div class="banner-label">Your Return</div>
+            <div class="banner-value" [class.positive]="currentUser?.returnPercentage > 0" 
+                                      [class.negative]="currentUser?.returnPercentage < 0">
+              {{formatPercentage(currentUser?.returnPercentage || 0)}}
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="podium">
+    <!-- Simulation Button -->
+    <section class="simulation-section" *ngIf="!loading">
+      <button class="simulate-btn" (click)="startSimulation()" [disabled]="simulationLoading">
+        <span class="btn-icon">🔮</span>
+        <span class="btn-text">{{ simulationLoading ? 'Simulating...' : 'Simulate 1 Year' }}</span>
+      </button>
+      
+      <button class="toggle-view-btn" *ngIf="predictedLeaderboard.length > 0" (click)="toggleRankings()">
+        {{ showPredictedRankings ? '📊 Show Current Rankings' : '🔮 Show Predicted Rankings' }}
+      </button>
+    </section>
+
+    <div *ngIf="loading" class="loading">🔄 Loading competition data...</div>
+
+    <!-- Top 3 Podium -->
+    <section class="podium" *ngIf="!loading && topThree.length >= 3" @fadeInUp>
+      <h2 class="section-title">🏆 {{ showPredictedRankings ? 'Predicted' : 'Current' }} Top Traders</h2>
       <div class="podium-standings">
-        <div class="podium-item second">
+        <!-- Second Place -->
+        <div class="podium-item second" @fadeInUp>
           <div class="rank-badge silver">2</div>
-          <div class="user-avatar">👨‍💼</div>
-          <div class="user-name">Sarah Chen</div>
+          <div class="user-avatar">🥈</div>
+          <div class="user-name">{{topThree[1]?.fullName}}</div>
           <div class="user-stats">
-            <div class="return-value">+12.4%</div>
-            <div class="portfolio-value">$245,890</div>
+            <div class="return-value">{{formatPercentage(topThree[1]?.returnPercentage || topThree[1]?.predictedReturnPercentage)}}</div>
+            <div class="portfolio-value">{{formatCurrency(topThree[1]?.portfolioValue || topThree[1]?.predictedPortfolioValue)}}</div>
+            <div class="trade-count" *ngIf="!showPredictedRankings">{{topThree[1]?.totalTrades}} trades</div>
           </div>
           <div class="medal">🥈</div>
         </div>
-        <div class="podium-item first">
+
+        <!-- First Place -->
+        <div class="podium-item first" @fadeInUp>
           <div class="rank-badge gold">1</div>
-          <div class="user-avatar">👩‍💻</div>
-          <div class="user-name">Alex Rodriguez</div>
+          <div class="user-avatar">🥇</div>
+          <div class="user-name">{{topThree[0]?.fullName}}</div>
           <div class="user-stats">
-            <div class="return-value">+18.7%</div>
-            <div class="portfolio-value">$312,450</div>
+            <div class="return-value">{{formatPercentage(topThree[0]?.returnPercentage || topThree[0]?.predictedReturnPercentage)}}</div>
+            <div class="portfolio-value">{{formatCurrency(topThree[0]?.portfolioValue || topThree[0]?.predictedPortfolioValue)}}</div>
+            <div class="trade-count" *ngIf="!showPredictedRankings">{{topThree[0]?.totalTrades}} trades</div>
           </div>
           <div class="medal">🥇</div>
         </div>
-        <div class="podium-item third">
+
+        <!-- Third Place -->
+        <div class="podium-item third" @fadeInUp>
           <div class="rank-badge bronze">3</div>
-          <div class="user-avatar">👨‍🎓</div>
-          <div class="user-name">Mike Johnson</div>
+          <div class="user-avatar">🥉</div>
+          <div class="user-name">{{topThree[2]?.fullName}}</div>
           <div class="user-stats">
-            <div class="return-value">+9.8%</div>
-            <div class="portfolio-value">$198,340</div>
+            <div class="return-value">{{formatPercentage(topThree[2]?.returnPercentage || topThree[2]?.predictedReturnPercentage)}}</div>
+            <div class="portfolio-value">{{formatCurrency(topThree[2]?.portfolioValue || topThree[2]?.predictedPortfolioValue)}}</div>
+            <div class="trade-count" *ngIf="!showPredictedRankings">{{topThree[2]?.totalTrades}} trades</div>
           </div>
           <div class="medal">🥉</div>
         </div>
       </div>
     </section>
 
-    <section class="rankings-table card">
+    <!-- Full Rankings Table -->
+    <section class="rankings-table card" *ngIf="!loading">
+      <div class="table-title">
+        <h2>📊 {{ showPredictedRankings ? 'Predicted Rankings (1 Year)' : 'Current Trader Rankings' }}</h2>
+        <div class="table-controls">
+          <span class="total-count">Showing {{filteredLeaderboard.length}} of {{globalLeaderboard.length}} traders</span>
+        </div>
+      </div>
+
       <div class="table-container">
         <div class="table-header">
           <div>Rank</div>
-          <div>User</div>
+          <div>Trader</div>
           <div>Portfolio Value</div>
           <div>Total Return</div>
-          <div>Trades</div>
-          <div>Win Rate</div>
-          <div>Badge</div>
+          <div *ngIf="!showPredictedRankings">Trades</div>
+          <div *ngIf="!showPredictedRankings">Win Rate</div>
+          <div *ngIf="!showPredictedRankings">Badge</div>
+          <div *ngIf="showPredictedRankings">Rank Change</div>
         </div>
-        <div class="table-row current-user">
-          <div class="rank">47</div>
+
+        <!-- Current User Row (Always Visible) -->
+        <div class="table-row current-user highlighted" *ngIf="currentUser" @fadeInUp>
+          <div class="rank">
+            <span class="rank-number">#{{showPredictedRankings ? (simulationData?.predictedRank || currentUser.rank) : currentUser.rank}}</span>
+          </div>
           <div class="user-info">
             <div class="user-avatar">👤</div>
             <div class="user-details">
               <div class="user-name">You</div>
-              <div class="user-handle">@yourusername</div>
+              <div class="user-handle">@{{currentUser.username}}</div>
             </div>
           </div>
-          <div>$128,450</div>
-          <div class="positive">+8.2%</div>
-          <div>247</div>
-          <div>64%</div>
-          <div><span class="badge consistent">Consistent</span></div>
+          <div class="portfolio-cell">
+            {{showPredictedRankings ? formatCurrency(simulationData?.predictedPortfolioValue || currentUser.portfolioValue) : formatCurrency(currentUser.portfolioValue)}}
+          </div>
+          <div [class]="getReturnClass(showPredictedRankings ? (simulationData?.predictedReturnPercentage || currentUser.returnPercentage) : currentUser.returnPercentage)">
+            {{formatPercentage(showPredictedRankings ? (simulationData?.predictedReturnPercentage || currentUser.returnPercentage) : currentUser.returnPercentage)}}
+          </div>
+          <div *ngIf="!showPredictedRankings">{{currentUser.totalTrades}}</div>
+          <div *ngIf="!showPredictedRankings">{{currentUser.winRate?.toFixed(1) || 0}}%</div>
+          <div *ngIf="!showPredictedRankings">
+            <span class="badge" [ngClass]="getBadgeClass(currentUser.badge)">
+              {{getBadgeIcon(currentUser.badge)}} {{currentUser.badge}}
+            </span>
+          </div>
+          <div *ngIf="showPredictedRankings && simulationData" [class]="getRankChangeClass(simulationData.rankChange)">
+            {{getRankChangeIcon(simulationData.rankChange)}} {{getAbsoluteValue(simulationData.rankChange)}}
+          </div>
         </div>
-        <div class="table-row">
-          <div class="rank">4</div>
+
+        <!-- All Other Traders -->
+        <div class="table-row" 
+             *ngFor="let trader of filteredLeaderboard; let i = index" 
+             [class.current-user]="isCurrentUser(trader.userId)"
+             [class.top-rank]="(showPredictedRankings ? trader.predictedRank : trader.rank) <= 10"
+             @fadeInUp>
+          <div class="rank">
+            <span class="rank-number" [style.color]="getRankColor(showPredictedRankings ? trader.predictedRank : trader.rank)">
+              #{{showPredictedRankings ? trader.predictedRank : trader.rank}}
+            </span>
+            <span class="rank-medal" *ngIf="(showPredictedRankings ? trader.predictedRank : trader.rank) === 1">🥇</span>
+            <span class="rank-medal" *ngIf="(showPredictedRankings ? trader.predictedRank : trader.rank) === 2">🥈</span>
+            <span class="rank-medal" *ngIf="(showPredictedRankings ? trader.predictedRank : trader.rank) === 3">🥉</span>
+          </div>
           <div class="user-info">
-            <div class="user-avatar">🧑‍🚀</div>
+            <div class="user-avatar">
+              <span *ngIf="(showPredictedRankings ? trader.predictedRank : trader.rank) <= 3">
+                {{(showPredictedRankings ? trader.predictedRank : trader.rank) === 1 ? '🥇' : (showPredictedRankings ? trader.predictedRank : trader.rank) === 2 ? '🥈' : '🥉'}}
+              </span>
+              <span *ngIf="(showPredictedRankings ? trader.predictedRank : trader.rank) > 3">👤</span>
+            </div>
             <div class="user-details">
-              <div class="user-name">Emma Davis</div>
-              <div class="user-handle">@emmad</div>
+              <div class="user-name">{{trader.fullName}}</div>
+              <div class="user-handle">@{{trader.username}}</div>
             </div>
           </div>
-          <div>$187,650</div>
-          <div class="positive">+15.3%</div>
-          <div>189</div>
-          <div>71%</div>
-          <div><span class="badge day-trader">Day Trader</span></div>
-        </div>
-        <div class="table-row">
-          <div class="rank">5</div>
-          <div class="user-info">
-            <div class="user-avatar">👩‍🔬</div>
-            <div class="user-details">
-              <div class="user-name">Lisa Wong</div>
-              <div class="user-handle">@lisaw</div>
-            </div>
+          <div class="portfolio-cell">
+            {{formatCurrency(showPredictedRankings ? trader.predictedPortfolioValue : trader.portfolioValue)}}
           </div>
-          <div>$176,890</div>
-          <div class="positive">+12.8%</div>
-          <div>156</div>
-          <div>68%</div>
-          <div><span class="badge swing">Swing Trader</span></div>
-        </div>
-        <div class="table-row">
-          <div class="rank">6</div>
-          <div class="user-info">
-            <div class="user-avatar">🧑‍💼</div>
-            <div class="user-details">
-              <div class="user-name">David Kim</div>
-              <div class="user-handle">@davidk</div>
-            </div>
+          <div [class]="getReturnClass(showPredictedRankings ? trader.predictedReturnPercentage : trader.returnPercentage)">
+            {{formatPercentage(showPredictedRankings ? trader.predictedReturnPercentage : trader.returnPercentage)}}
           </div>
-          <div>$165,430</div>
-          <div class="positive">+11.2%</div>
-          <div>203</div>
-          <div>65%</div>
-          <div><span class="badge crypto">Crypto Expert</span></div>
-        </div>
-        <div class="table-row">
-          <div class="rank">7</div>
-          <div class="user-info">
-            <div class="user-avatar">👨‍🎨</div>
-            <div class="user-details">
-              <div class="user-name">James Liu</div>
-              <div class="user-handle">@jamesl</div>
-            </div>
+          <div *ngIf="!showPredictedRankings">{{trader.totalTrades}}</div>
+          <div *ngIf="!showPredictedRankings">{{trader.winRate?.toFixed(1) || 0}}%</div>
+          <div *ngIf="!showPredictedRankings">
+            <span class="badge" [ngClass]="getBadgeClass(trader.badge)">
+              {{getBadgeIcon(trader.badge)}} {{trader.badge}}
+            </span>
           </div>
-          <div>$152,780</div>
-          <div class="positive">+9.7%</div>
-          <div>178</div>
-          <div>62%</div>
-          <div><span class="badge consistent">Consistent</span></div>
+          <div *ngIf="showPredictedRankings" [class]="getRankChangeClass(trader.rankChange)">
+            {{getRankChangeIcon(trader.rankChange)}} {{getAbsoluteValue(trader.rankChange)}}
+          </div>
         </div>
-      </div>
-      <div class="rank-indicator">
-        <span>Your rank: #47 of 1,247 traders</span>
       </div>
     </section>
 
-    <section class="stats-sidebar">
-      <div class="stats-card card">
-        <h3>Your Statistics</h3>
-        <div class="stat-item">
-          <div class="stat-label">Current Rank</div>
-          <div class="stat-value">#47</div>
-          <div class="stat-trend positive">▲ +5 this week</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Percentile</div>
-          <div class="stat-value">96th</div>
-          <div class="stat-desc">Top 4% of traders</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Points to Next Rank</div>
-          <div class="stat-value">1,250</div>
-          <div class="stat-desc">Keep trading to climb</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-label">Monthly Achievement</div>
-          <div class="stat-value">🏆</div>
-          <div class="stat-desc">Consistent Trader</div>
-        </div>
-      </div>
-
-      <div class="categories card">
-        <h3>Category Leaderboards</h3>
-        <div class="category-tabs">
-          <button class="category-tab active">Best Day Trader</button>
-          <button class="category-tab">Best Swing Trader</button>
-          <button class="category-tab">Best Crypto Trader</button>
-          <button class="category-tab">Most Consistent</button>
-        </div>
-        <div class="category-rankings">
-          <div class="ranking-item">
-            <div class="rank">1</div>
-            <div class="user-avatar">👩‍💻</div>
-            <div class="user-name">Alex Rodriguez</div>
-            <div class="score">+18.7%</div>
-          </div>
-          <div class="ranking-item">
-            <div class="rank">2</div>
-            <div class="user-avatar">👨‍💼</div>
-            <div class="user-name">Sarah Chen</div>
-            <div class="score">+12.4%</div>
-          </div>
-          <div class="ranking-item current-user">
-            <div class="rank">3</div>
-            <div class="user-avatar">👤</div>
-            <div class="user-name">You</div>
-            <div class="score">+8.2%</div>
+    <!-- Category Leaders -->
+    <section class="categories-grid" *ngIf="!loading && categories && !showPredictedRankings">
+      <div class="category-card card" *ngFor="let tab of categoryTabs">
+        <h3>{{tab.icon}} {{tab.label}}</h3>
+        <div class="category-list">
+          <div class="category-item" *ngFor="let trader of getCategoryData(tab.key).slice(0, 5); let i = index">
+            <div class="category-rank">{{i + 1}}</div>
+            <div class="category-name">{{trader.fullName}}</div>
+            <div class="category-value" [class.positive]="trader.returnPercentage > 0">
+              {{formatPercentage(trader.returnPercentage)}}
+            </div>
           </div>
         </div>
       </div>
     </section>
   </main>
+</div>
+
+<!-- Simulation Modal -->
+<div class="simulation-modal" *ngIf="showSimulationModal" @fadeInUp>
+  <div class="modal-overlay" (click)="closeSimulationModal()"></div>
+  
+  <div class="modal-content">
+    <button class="modal-close" (click)="closeSimulationModal()">✕</button>
+    
+    <div *ngIf="simulationLoading" class="simulation-loading">
+      <div class="loading-spinner"></div>
+      <h2>🔮 Simulating 1 Year Into the Future...</h2>
+      <p>Analyzing 10,000 scenarios per user...</p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!simulationLoading && simulationData" class="simulation-results">
+      <!-- Header -->
+      <div class="results-header">
+        <h2>🎯 Your 1-Year Trading Prediction</h2>
+        <p class="confidence">Confidence Level: {{ (simulationData.confidenceLevel * 100).toFixed(1) }}%</p>
+      </div>
+
+      <!-- Rank Comparison -->
+      <div class="rank-comparison">
+        <div class="rank-card current">
+          <div class="rank-label">Current Rank</div>
+          <div class="rank-value">#{{ simulationData.currentRank }}</div>
+          <div class="rank-sub">{{ formatCurrency(simulationData.currentPortfolioValue) }}</div>
+        </div>
+
+        <div class="rank-arrow" [class]="getRankChangeClass(simulationData.rankChange)">
+          <span class="arrow-icon">{{ getRankChangeIcon(simulationData.rankChange) }}</span>
+          <span class="arrow-text">{{ getAbsoluteValue(simulationData.rankChange) }} positions</span>
+        </div>
+
+        <div class="rank-card predicted">
+          <div class="rank-label">Predicted Rank</div>
+          <div class="rank-value predicted-rank">#{{ simulationData.predictedRank }}</div>
+          <div class="rank-sub">{{ formatCurrency(simulationData.predictedPortfolioValue) }}</div>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">📈</div>
+          <div class="metric-label">Expected Return</div>
+          <div class="metric-value" [class.positive]="simulationData.expectedAnnualReturn > 0">
+            {{ formatPercentage(simulationData.expectedAnnualReturn) }}
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">⚠️</div>
+          <div class="metric-label">Risk Score</div>
+          <div class="metric-value">{{ simulationData.riskScore }}/100</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">🎯</div>
+          <div class="metric-label">Diversification</div>
+          <div class="metric-value">{{ simulationData.diversificationScore.toFixed(0) }}/100</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">📊</div>
+          <div class="metric-label">Sharpe Ratio</div>
+          <div class="metric-value">{{ simulationData.sharpeRatio.toFixed(2) }}</div>
+        </div>
+      </div>
+
+      <!-- Scenario Analysis -->
+      <div class="scenario-analysis">
+        <h3>📊 Possible Scenarios</h3>
+        <div class="scenario-bars">
+          <div class="scenario-bar worst">
+            <div class="bar-label">Worst Case</div>
+            <div class="bar-value">{{ formatCurrency(simulationData.worstCaseValue) }}</div>
+          </div>
+          <div class="scenario-bar expected">
+            <div class="bar-label">Expected</div>
+            <div class="bar-value">{{ formatCurrency(simulationData.predictedPortfolioValue) }}</div>
+          </div>
+          <div class="scenario-bar best">
+            <div class="bar-label">Best Case</div>
+            <div class="bar-value">{{ formatCurrency(simulationData.bestCaseValue) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div class="explanation-section" *ngIf="simulationData.explanation">
+        <h3>💡 Why This Prediction?</h3>
+        
+        <div class="explanation-card overall">
+          <p>{{ simulationData.explanation.overallAssessment }}</p>
+        </div>
+
+        <div class="explanation-grid">
+          <div class="explanation-card strengths" *ngIf="simulationData.explanation.strengths?.length > 0">
+            <h4>✅ Strengths</h4>
+            <ul>
+              <li *ngFor="let strength of simulationData.explanation.strengths">{{ strength }}</li>
+            </ul>
+          </div>
+
+          <div class="explanation-card weaknesses" *ngIf="simulationData.explanation.weaknesses?.length > 0">
+            <h4>⚠️ Weaknesses</h4>
+            <ul>
+              <li *ngFor="let weakness of simulationData.explanation.weaknesses">{{ weakness }}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="recommendations" *ngIf="simulationData.explanation.recommendations?.length > 0">
+          <h4>💡 Recommendations</h4>
+          <ul>
+            <li *ngFor="let rec of simulationData.explanation.recommendations">{{ rec }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Asset Predictions -->
+      <div class="asset-predictions" *ngIf="simulationData.assetPredictions?.length > 0">
+        <h3>🪙 Your Assets - 1 Year Prediction</h3>
+        <div class="assets-table">
+          <div class="asset-row header">
+            <div>Asset</div>
+            <div>Current Value</div>
+            <div>Predicted Value</div>
+            <div>Expected Return</div>
+            <div>Risk</div>
+            <div>Action</div>
+          </div>
+          <div class="asset-row" *ngFor="let asset of simulationData.assetPredictions">
+            <div class="asset-name">
+              <span class="asset-symbol">{{ asset.coinSymbol.toUpperCase() }}</span>
+              <span class="asset-contribution">{{ asset.contributionToRank }}% of portfolio</span>
+            </div>
+            <div>{{ formatCurrency(asset.currentValue) }}</div>
+            <div>{{ formatCurrency(asset.predictedValue) }}</div>
+            <div [class]="getReturnClass(asset.expectedReturn)">
+              {{ formatPercentage(asset.expectedReturn) }}
+            </div>
+            <div>
+              <span class="risk-badge" [class]="'risk-' + asset.riskLevel.toLowerCase().replace(' ', '-')">
+                {{ asset.riskLevel }}
+              </span>
+            </div>
+            <div>
+              <span class="action-badge" [class]="'action-' + asset.recommendation.toLowerCase()">
+                {{ asset.recommendation }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Close Button -->
+      <button class="btn-primary simulation-close-btn" (click)="closeSimulationModal()">
+        Got It!
+      </button>
+    </div>
+  </div>
 </div>
