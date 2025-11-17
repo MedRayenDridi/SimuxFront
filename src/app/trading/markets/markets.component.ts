@@ -19,7 +19,7 @@ export class MarketsComponent implements OnInit, OnDestroy {
   topGainers: CoinWithStats[] = [];
   topLosers: CoinWithStats[] = [];
   mostActive: CoinWithStats[] = [];
-  
+
   wallet: Wallet | null = null;
   
   activeTab: 'gainers' | 'losers' | 'active' = 'gainers';
@@ -222,4 +222,5 @@ export class MarketsComponent implements OnInit, OnDestroy {
   refreshData(): void {
     this.loadData();
   }
+
 }

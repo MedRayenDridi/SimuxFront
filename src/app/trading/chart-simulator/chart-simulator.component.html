@@ -1,0 +1,41 @@
+<div class="simulator-shell">
+  <section class="instrument-panel">
+    <div class="panel-header">
+      <h2>Choisissez un actif</h2>
+      <p>Sélection rapide ou saisie manuelle pour streamer vos propres symboles backend.</p>
+    </div>
+
+    <div class="instrument-grid">
+      <button
+        class="instrument-card"
+        *ngFor="let instrument of instruments"
+        [class.active]="instrument.symbol === selectedInstrument.symbol"
+        (click)="selectInstrument(instrument)">
+        <div class="symbol">{{ instrument.symbol }}</div>
+        <div class="name">{{ instrument.name }}</div>
+        <div class="desc">{{ instrument.description }}</div>
+      </button>
+    </div>
+
+    <div class="manual-entry">
+      <label for="manualSymbol">Ou entrez un symbole personnalisé (ex: SOL) :</label>
+      <div class="manual-input">
+        <input
+          id="manualSymbol"
+          type="text"
+          placeholder="TAPEZ LE SYMBOLE"
+          [(ngModel)]="manualSymbol"
+          (keyup.enter)="applyManualSymbol()">
+        <button (click)="applyManualSymbol()">Charger</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-wrapper">
+    <app-chart-trading
+      [symbol]="selectedInstrument.symbol"
+      [displayName]="selectedInstrument.name">
+    </app-chart-trading>
+  </section>
+</div>
+

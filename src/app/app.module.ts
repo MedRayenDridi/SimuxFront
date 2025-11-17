@@ -26,6 +26,8 @@ import { TradeHistoryComponent } from './trading/trade-history/trade-history.com
 import { LeaderboardComponent } from './trading/leaderboard/leaderboard.component';
 import { LearningComponent } from './trading/learning/learning.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { ChartTradingComponent } from './trading/chart-trading/chart-trading.component';
+import { ChartSimulatorComponent } from './trading/chart-simulator/chart-simulator.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +45,9 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
     TradeHistoryComponent,
     LeaderboardComponent,
     LearningComponent,
-    SidebarComponent
+    SidebarComponent,
+    ChartTradingComponent,
+    ChartSimulatorComponent
   ],
   imports: [
     BrowserModule,

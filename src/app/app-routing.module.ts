@@ -13,6 +13,7 @@ import { WatchlistComponent } from './trading/watchlist/watchlist.component';
 import { TradeHistoryComponent } from './trading/trade-history/trade-history.component';
 import { LeaderboardComponent } from './trading/leaderboard/leaderboard.component';
 import { LearningComponent } from './trading/learning/learning.component';
+import { ChartSimulatorComponent } from './trading/chart-simulator/chart-simulator.component';
 
 
 const routes: Routes = [
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'trade-history', component: TradeHistoryComponent },
   { path: 'leaderboard', component: LeaderboardComponent },
   { path: 'learning', component: LearningComponent },
+  { path: 'chart-simulator', component: ChartSimulatorComponent },
 
   // Wildcard route for 404 pages (must be last)
   { path: '**', component: NotFoundComponent }

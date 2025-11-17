@@ -1,0 +1,45 @@
+<div class="chart-shell">
+  <div class="chart-header">
+    <div class="chart-title">
+      <h2>{{ instrumentLabel }}</h2>
+      <p>Flux pro · Mise à l'échelle automatique · Propulsé par SimX Backend</p>
+    </div>
+
+    <div class="timeframe-group">
+      <button
+        class="tf-btn"
+        *ngFor="let tf of timeframes"
+        [class.active]="tf === selectedTimeframe"
+        (click)="onSelectTimeframe(tf)">
+        {{ tf.toUpperCase() }}
+      </button>
+    </div>
+  </div>
+
+  <div class="chart-context">
+    <div class="ohlc-pill" *ngIf="lastCandle as candle">
+      <span>O {{ candle.open | number:'1.2-2' }}</span>
+      <span>H {{ candle.high | number:'1.2-2' }}</span>
+      <span>L {{ candle.low | number:'1.2-2' }}</span>
+      <span>C {{ candle.close | number:'1.2-2' }}</span>
+      <span>Vol {{ candle.volume | number:'1.0-0' }}</span>
+    </div>
+
+    <div class="status-pill" *ngIf="loading">
+      Chargement des chandelles...
+    </div>
+    <div class="status-pill error" *ngIf="error">
+      {{ error }}
+    </div>
+  </div>
+
+  <div class="chart-canvas" #chartContainer>
+    <div class="chart-overlay" *ngIf="loading">
+      <div class="loader"></div>
+      <p>Initialisation du graphique avancé</p>
+    </div>
+  </div>
+
+  <div class="chart-tooltip" #chartTooltip></div>
+</div>
+
