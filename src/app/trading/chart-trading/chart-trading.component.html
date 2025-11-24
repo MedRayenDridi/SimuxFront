@@ -5,13 +5,25 @@
       <p>Flux pro · Mise à l'échelle automatique · Propulsé par SimX Backend</p>
     </div>
 
-    <div class="timeframe-group">
+    <div class="chart-actions">
+      <div class="timeframe-group">
+        <button
+          class="tf-btn"
+          *ngFor="let tf of timeframes"
+          [class.active]="tf === selectedTimeframe"
+          (click)="onSelectTimeframe(tf)">
+          {{ tf.toUpperCase() }}
+        </button>
+      </div>
+
       <button
-        class="tf-btn"
-        *ngFor="let tf of timeframes"
-        [class.active]="tf === selectedTimeframe"
-        (click)="onSelectTimeframe(tf)">
-        {{ tf.toUpperCase() }}
+        type="button"
+        class="trade-toggle"
+        [class.active]="tradeMarkersEnabled"
+        (click)="toggleTradeMarkers()">
+        <span class="toggle-indicator" [attr.data-state]="tradeMarkersEnabled ? 'on' : 'off'"></span>
+        <span class="toggle-label">Trades</span>
+        <span class="toggle-status" *ngIf="tradeMarkersLoading">Sync…</span>
       </button>
     </div>
   </div>
@@ -31,13 +43,91 @@
     <div class="status-pill error" *ngIf="error">
       {{ error }}
     </div>
+    <div class="status-pill warning" *ngIf="tradeMarkersLoading">
+      Synchronisation des trades…
+    </div>
+    <div class="status-pill error" *ngIf="tradeMarkersError">
+      {{ tradeMarkersError }}
+    </div>
   </div>
 
-  <div class="chart-canvas" #chartContainer>
-    <div class="chart-overlay" *ngIf="loading">
-      <div class="loader"></div>
-      <p>Initialisation du graphique avancé</p>
+  <div class="indicator-panel">
+    <div class="indicator-panel-header">
+      <h3>Indicateurs techniques</h3>
+      <p>Activez vos oscillateurs favoris et personnalisez leurs paramètres.</p>
     </div>
+    <div class="indicator-controls">
+      <div class="indicator-card" *ngFor="let indicator of indicatorCatalog">
+        <div class="indicator-card-head">
+          <div>
+            <h4>{{ indicator.label }}</h4>
+            <small>{{ indicator.description }}</small>
+          </div>
+          <button
+            type="button"
+            class="indicator-toggle"
+            [class.active]="isIndicatorActive(indicator.type)"
+            (click)="isIndicatorActive(indicator.type) ? onRemoveIndicator(indicator.type) : applyIndicator(indicator.type)"
+            [disabled]="loading || !chartReady">
+            {{ isIndicatorActive(indicator.type) ? 'Retirer' : 'Ajouter' }}
+          </button>
+        </div>
+        <div class="indicator-card-body">
+          <div class="indicator-field" *ngFor="let control of indicator.controls">
+            <label>{{ control.label }}</label>
+            <input
+              *ngIf="control.type === 'number'"
+              type="number"
+              [min]="control.min ?? null"
+              [max]="control.max ?? null"
+              [step]="control.step ?? 1"
+              [(ngModel)]="indicatorForms[indicator.type][control.key]"
+              [ngModelOptions]="{ standalone: true }" />
+            <input
+              *ngIf="control.type === 'text'"
+              type="text"
+              [placeholder]="control.placeholder"
+              [(ngModel)]="indicatorForms[indicator.type][control.key]"
+              [ngModelOptions]="{ standalone: true }" />
+            <input
+              *ngIf="control.type === 'color'"
+              type="color"
+              [(ngModel)]="indicatorForms[indicator.type][control.key]"
+              [ngModelOptions]="{ standalone: true }" />
+          </div>
+          <button
+            type="button"
+            class="config-apply"
+            (click)="applyIndicator(indicator.type)"
+            [disabled]="loading || !chartReady">
+            Appliquer
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="active-indicators" *ngIf="indicatorStates.length">
+      <span>Actifs :</span>
+      <button
+        type="button"
+        class="active-indicator-chip"
+        *ngFor="let indicator of indicatorStates"
+        (click)="onRemoveIndicator(indicator.type)">
+        {{ indicator.label }}
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chart-stack">
+    <div class="chart-canvas" #chartWrapper>
+      <div class="chart-host" #chartContainer></div>
+      <div class="chart-overlay" *ngIf="loading">
+        <div class="loader"></div>
+        <p>Initialisation du graphique avancé</p>
+      </div>
+      <div class="trade-marker-tooltip" #tradeMarkerTooltip></div>
+    </div>
+    <div class="indicator-panes" #indicatorPanesHost></div>
   </div>
 
   <div class="chart-tooltip" #chartTooltip></div>

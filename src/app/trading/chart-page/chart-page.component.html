@@ -1,0 +1,76 @@
+<div class="chart-page-shell" [formGroup]="chartForm">
+  <header class="chart-page-header">
+    <div>
+      <h1>TradingView Pro</h1>
+      <p>Flux en direct · Binance / CoinGecko · Candles multi-timeframes</p>
+    </div>
+    <div class="status-line">
+      <span>Symbole</span>
+      <strong>{{ selectedSymbol }}</strong>
+      <span>Dernière mise à jour</span>
+      <strong>{{ lastUpdated ? (lastUpdated | date:'shortTime') : '—' }}</strong>
+    </div>
+    <div class="status-warning" *ngIf="fallbackActive && fallbackInfo">
+      {{ fallbackInfo }}
+    </div>
+  </header>
+
+  <section class="chart-config">
+    <div class="config-row">
+      <label>Symbole</label>
+      <input type="text" formControlName="symbol" placeholder="BTCUSDT">
+    </div>
+    <div class="config-row">
+      <label>Broker</label>
+      <select formControlName="provider">
+        <option *ngFor="let provider of providers" [value]="provider.value">
+          {{ provider.label }}
+        </option>
+      </select>
+    </div>
+    <div class="config-row">
+      <label>Flux</label>
+      <select formControlName="stream">
+        <option *ngFor="let stream of streams" [value]="stream.value">
+          {{ stream.label }}
+        </option>
+      </select>
+    </div>
+    <div class="config-row">
+      <label>Polling (ms)</label>
+      <input type="number" formControlName="pollInterval" min="2000" step="1000">
+    </div>
+    <div class="config-actions">
+      <button type="button" class="primary" (click)="onApplySettings()">Recharger</button>
+    </div>
+  </section>
+
+  <section class="timeframe-bar">
+    <button
+      type="button"
+      *ngFor="let tf of timeframes"
+      [class.active]="selectedInterval === tf"
+      (click)="onSelectTimeframe(tf)">
+      {{ tf.toUpperCase() }}
+    </button>
+  </section>
+
+  <section class="chart-container">
+    <app-chart-trading
+      *ngIf="chartInitialData as feed"
+      [mode]="'external'"
+      [symbol]="selectedSymbol"
+      [displayName]="selectedSymbol + ' · ' + selectedStream.toUpperCase()"
+      [simulationInitialData]="feed"
+      [simulationTicks]="chartTicks$"
+      [simulationMarkers]="chartMarkers">
+    </app-chart-trading>
+    <div class="chart-loading" *ngIf="loading">
+      Chargement du graphique...
+    </div>
+    <div class="chart-error" *ngIf="error">
+      {{ error }}
+    </div>
+  </section>
+</div>
+

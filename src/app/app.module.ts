@@ -28,6 +28,7 @@ import { LearningComponent } from './trading/learning/learning.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { ChartTradingComponent } from './trading/chart-trading/chart-trading.component';
 import { ChartSimulatorComponent } from './trading/chart-simulator/chart-simulator.component';
+import { ChartPageComponent } from './trading/chart-page/chart-page.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { ChartSimulatorComponent } from './trading/chart-simulator/chart-simulat
     LearningComponent,
     SidebarComponent,
     ChartTradingComponent,
-    ChartSimulatorComponent
+    ChartSimulatorComponent,
+    ChartPageComponent
   ],
   imports: [
     BrowserModule,

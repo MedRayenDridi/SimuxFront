@@ -70,3 +70,13 @@ export interface BarChartData {
   value: number;
   color?: string;
 }
+
+export interface TradeMarkerResponse {
+  id: number | string;
+  symbol: string;
+  type: 'BUY' | 'SELL' | string;
+  price: number;
+  quantity: number;
+  timestamp: string;
+  status?: string;
+}

@@ -1,8 +1,8 @@
-<div class="simulator-shell">
+<div class="simulator-shell" [formGroup]="controlForm">
   <section class="instrument-panel">
     <div class="panel-header">
-      <h2>Choisissez un actif</h2>
-      <p>Sélection rapide ou saisie manuelle pour streamer vos propres symboles backend.</p>
+      <h2>Mode Simulation / Game</h2>
+      <p>Choisissez votre actif puis configurez la vitesse, le broker et la source de données.</p>
     </div>
 
     <div class="instrument-grid">
@@ -18,24 +18,173 @@
     </div>
 
     <div class="manual-entry">
-      <label for="manualSymbol">Ou entrez un symbole personnalisé (ex: SOL) :</label>
+      <label for="manualSymbol">Ou entrez un symbole personnalisé (ex: SOLUSDT) :</label>
       <div class="manual-input">
         <input
           id="manualSymbol"
           type="text"
           placeholder="TAPEZ LE SYMBOLE"
           [(ngModel)]="manualSymbol"
+          [ngModelOptions]="{ standalone: true }"
           (keyup.enter)="applyManualSymbol()">
-        <button (click)="applyManualSymbol()">Charger</button>
+        <button type="button" (click)="applyManualSymbol()">Charger</button>
       </div>
+    </div>
+  </section>
+
+  <section class="sim-controls">
+    <div class="control-grid">
+      <div class="control-field">
+        <label>Source de données</label>
+        <select formControlName="dataMode">
+          <option *ngFor="let mode of dataModes" [value]="mode.value">{{ mode.label }}</option>
+        </select>
+      </div>
+
+      <div class="control-field">
+        <label>Broker</label>
+        <select formControlName="broker">
+          <option *ngFor="let broker of brokers" [value]="broker.value">{{ broker.label }}</option>
+        </select>
+      </div>
+
+      <div class="control-field">
+        <label>Timeframe</label>
+        <select formControlName="timeframe">
+          <option *ngFor="let tf of timeframes" [value]="tf">{{ tf.toUpperCase() }}</option>
+        </select>
+      </div>
+
+      <div class="control-field">
+        <label>Période</label>
+        <select formControlName="dataSpan">
+          <option *ngFor="let span of dataSpans" [value]="span">{{ span }}</option>
+        </select>
+      </div>
+
+      <div class="control-field">
+        <label>JumpTo Date</label>
+        <div class="jump-row">
+          <input formControlName="jumpDate" type="date">
+          <button type="button" (click)="jumpToDate()">Aller</button>
+        </div>
+      </div>
+
+      <div class="control-field speed-field">
+        <label>Vitesse simulation</label>
+        <div class="speed-buttons">
+          <button
+            type="button"
+            *ngFor="let speed of speedOptions"
+            [class.active]="controlForm.value.speed === speed"
+            (click)="changeSpeed(speed)">
+            {{ 'x' + speed }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-actions">
+      <button type="button" class="primary" (click)="startSimulation()">Start</button>
+      <button type="button" (click)="pauseSimulation()">Pause</button>
+      <button type="button" (click)="resumeSimulation()">Resume</button>
+      <button type="button" class="ghost" (click)="resetSimulation()">Reset</button>
     </div>
   </section>
 
   <section class="chart-wrapper">
     <app-chart-trading
+      [mode]="'simulation'"
       [symbol]="selectedInstrument.symbol"
-      [displayName]="selectedInstrument.name">
+      [displayName]="selectedInstrument.name"
+      [simulationInitialData]="simulationInitial$ | async"
+      [simulationTicks]="simulationTicks$"
+      [simulationMarkers]="simulationMarkers$ | async">
     </app-chart-trading>
+  </section>
+
+  <section class="trade-panel">
+    <div class="trade-header">
+      <div class="pnl-block" *ngIf="status$ | async as status">
+        <div>
+          <span class="label">PNL Temps réel</span>
+          <strong [class.positive]="status.totalPnL >= 0" [class.negative]="status.totalPnL < 0">
+            {{ status.totalPnL | number:'1.2-2' }} USDT
+          </strong>
+        </div>
+        <div>
+          <span class="label">Progression</span>
+          <strong>{{ status.progress | number:'1.0-0' }}%</strong>
+        </div>
+        <div>
+          <span class="label">Dernière bougie</span>
+          <strong>
+            {{ status.currentCandle?.close | number:'1.2-2' }}
+            <small *ngIf="status.currentCandle as candle">
+              {{ (candle.time * 1000) | date:'short' }}
+            </small>
+          </strong>
+        </div>
+      </div>
+
+      <div class="trade-actions">
+        <label>Quantité</label>
+        <input type="number" formControlName="quantity" min="0.01" step="0.01">
+
+        <label>Leverage</label>
+        <input type="number" formControlName="leverage" min="1" step="1">
+
+        <label>Slippage (%)</label>
+        <input type="number" formControlName="slippage" min="0" step="0.01">
+
+        <label>TP</label>
+        <input type="number" formControlName="takeProfit" placeholder="Optionnel">
+
+        <label>SL</label>
+        <input type="number" formControlName="stopLoss" placeholder="Optionnel">
+
+        <button type="button" class="buy" (click)="executeTrade('BUY')">Buy</button>
+        <button type="button" class="sell" (click)="executeTrade('SELL')">Sell</button>
+      </div>
+    </div>
+
+    <div class="trade-table" *ngIf="trades$ | async as trades">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Prix entrée</th>
+            <th>Prix actuel</th>
+            <th>Quantité</th>
+            <th>Lev.</th>
+            <th>PNL</th>
+            <th>Marge</th>
+            <th>TP</th>
+            <th>SL</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trade of trades; trackBy: trackTrade">
+            <td><span [class.buy]="trade.side === 'BUY'" [class.sell]="trade.side === 'SELL'">{{ trade.side }}</span></td>
+            <td>{{ trade.entryPrice | number:'1.2-2' }}</td>
+            <td>{{ trade.currentPrice | number:'1.2-2' }}</td>
+            <td>{{ trade.quantity }}</td>
+            <td>x{{ trade.leverage }}</td>
+            <td [class.positive]="trade.pnl >= 0" [class.negative]="trade.pnl < 0">
+              {{ trade.pnl | number:'1.2-2' }} ({{ trade.pnlPercent | number:'1.2-2' }}%)
+            </td>
+            <td>{{ trade.margin | number:'1.2-2' }}</td>
+            <td>{{ trade.takeProfit || '—' }}</td>
+            <td>{{ trade.stopLoss || '—' }}</td>
+            <td>{{ trade.status }}</td>
+          </tr>
+          <tr *ngIf="!trades.length">
+            <td colspan="10">Aucun trade simulé pour le moment.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 </div>
 

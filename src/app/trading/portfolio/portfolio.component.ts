@@ -32,6 +32,7 @@ export class PortfolioComponent implements OnInit, OnDestroy {
   assets: Asset[] = [];
   holdings: HoldingWithStats[] = [];
   orders: Order[] = [];
+  readonly today = new Date();
   
   portfolioStats: PortfolioStats = {
     totalValue: 0,

@@ -30,13 +30,15 @@ export class AuthInterceptor implements HttpInterceptor {
     // Send the cloned request with header to the next handler
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
-        // Handle 401 Unauthorized errors
         if (error.status === 401) {
-          this.userService.logout();
-          this.router.navigate(['/auth/login']);
+          const isConnectorCall = req.url.includes('/connectors/');
+          if (!isConnectorCall) {
+            this.userService.logout();
+            this.router.navigate(['/auth/login']);
+          }
         }
-        
-        return throwError(error);
+
+        return throwError(() => error);
       })
     );
   }

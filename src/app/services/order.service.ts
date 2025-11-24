@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { TradeMarkerResponse } from '../trading/models/trade.model';
 
 export interface Order {
   id?: number;
@@ -72,6 +73,26 @@ export class OrderService {
       params = params.set('asset_symbol', assetSymbol);
     }
     return this.http.get<Order[]>(this.baseUrl, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getTradeMarkersForSymbol(
+    symbol: string,
+    options?: { from?: string; to?: string; limit?: number }
+  ): Observable<TradeMarkerResponse[]> {
+    let params = new HttpParams().set('symbol', symbol);
+    if (options?.from) {
+      params = params.set('from', options.from);
+    }
+    if (options?.to) {
+      params = params.set('to', options.to);
+    }
+    if (options?.limit) {
+      params = params.set('limit', options.limit.toString());
+    }
+
+    return this.http.get<TradeMarkerResponse[]>(`${this.baseUrl}/chart-markers`, { params }).pipe(
       catchError(this.handleError)
     );
   }

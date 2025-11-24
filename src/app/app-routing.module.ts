@@ -14,6 +14,7 @@ import { TradeHistoryComponent } from './trading/trade-history/trade-history.com
 import { LeaderboardComponent } from './trading/leaderboard/leaderboard.component';
 import { LearningComponent } from './trading/learning/learning.component';
 import { ChartSimulatorComponent } from './trading/chart-simulator/chart-simulator.component';
+import { ChartPageComponent } from './trading/chart-page/chart-page.component';
 
 
 const routes: Routes = [
@@ -36,6 +37,7 @@ const routes: Routes = [
   { path: 'trade-history', component: TradeHistoryComponent },
   { path: 'leaderboard', component: LeaderboardComponent },
   { path: 'learning', component: LearningComponent },
+  { path: 'chart', component: ChartPageComponent },
   { path: 'chart-simulator', component: ChartSimulatorComponent },
 
   // Wildcard route for 404 pages (must be last)
