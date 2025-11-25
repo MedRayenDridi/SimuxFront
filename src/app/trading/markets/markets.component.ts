@@ -3,6 +3,7 @@ import { interval, Subscription } from 'rxjs';
 import { CoinService, Coin } from '../../services/coin.service';
 import { WalletService, Wallet } from '../../services/wallet.service';
 import { OrderService } from '../../services/order.service';
+import { NewsService, CryptoNews } from '../../services/news.service';
 
 interface CoinWithStats extends Coin {
   changeClass: 'positive' | 'negative';
@@ -35,19 +36,40 @@ export class MarketsComponent implements OnInit, OnDestroy {
   tradeMessage: string = '';
   
   private refreshSubscription?: Subscription;
+  private newsRefreshSubscription?: Subscription;
+
+  news: CryptoNews[] = [];
+  newsLoading = true;
+  newsError = '';
+  newsLimit = 8;
+  selectedCategory: string = 'all';
+  readonly newsCategories = [
+    { label: 'Top News', value: 'all' },
+    { label: 'Bitcoin', value: 'BTC' },
+    { label: 'Altcoins', value: 'ETH,XRP,ADA,SOL' },
+    { label: 'DeFi', value: 'DEFI' },
+    { label: 'Trading', value: 'TRADING' }
+  ];
 
   constructor(
     private coinService: CoinService,
     private walletService: WalletService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private newsService: NewsService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+    this.loadNews();
     
     // Auto-refresh every 30 seconds
     this.refreshSubscription = interval(30000).subscribe(() => {
       this.loadCoins();
+    });
+
+    // Refresh news every 5 minutes
+    this.newsRefreshSubscription = interval(300000).subscribe(() => {
+      this.loadNews(false);
     });
   }
 
@@ -55,11 +77,35 @@ export class MarketsComponent implements OnInit, OnDestroy {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
+    if (this.newsRefreshSubscription) {
+      this.newsRefreshSubscription.unsubscribe();
+    }
   }
 
   loadData(): void {
     this.loadWallet();
     this.loadCoins();
+  }
+
+  loadNews(showLoader: boolean = true): void {
+    if (showLoader) {
+      this.newsLoading = true;
+    }
+    this.newsError = '';
+
+    const categoriesParam = this.selectedCategory === 'all' ? undefined : this.selectedCategory;
+
+    this.newsService.getLatestNews(this.newsLimit, categoriesParam).subscribe({
+      next: (news: CryptoNews[]) => {
+        this.news = news;
+        this.newsLoading = false;
+      },
+      error: (error: any) => {
+        console.error('Error loading news:', error);
+        this.newsError = 'Impossible de charger les dernières actualités. Veuillez réessayer.';
+        this.newsLoading = false;
+      }
+    });
   }
 
   loadWallet(): void {
@@ -221,6 +267,19 @@ export class MarketsComponent implements OnInit, OnDestroy {
 
   refreshData(): void {
     this.loadData();
+    this.loadNews();
+  }
+
+  onNewsCategoryChange(category: string): void {
+    if (category === this.selectedCategory) {
+      return;
+    }
+    this.selectedCategory = category;
+    this.loadNews();
+  }
+
+  trackNewsById(_: number, item: CryptoNews): string {
+    return item.id;
   }
 
 }

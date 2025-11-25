@@ -116,6 +116,62 @@
           </div>
         </div>
       </div>
+
+      <!-- Market News -->
+      <div class="market-news card">
+        <div class="news-header">
+          <div class="news-header-text">
+            <p class="news-eyebrow">Live Feed</p>
+            <h3>Crypto News</h3>
+          </div>
+          <button class="icon refresh-icon" (click)="loadNews()" [disabled]="newsLoading" title="Actualiser les news">
+            ⟳
+          </button>
+        </div>
+
+        <div class="news-filters">
+          <button
+            *ngFor="let category of newsCategories"
+            class="filter-chip"
+            [class.active]="selectedCategory === category.value"
+            (click)="onNewsCategoryChange(category.value)">
+            {{ category.label }}
+          </button>
+        </div>
+
+        <div class="news-content">
+          <div *ngIf="newsLoading" class="news-loading">
+            <div class="spinner small">Chargement des actualités...</div>
+          </div>
+
+          <div *ngIf="!newsLoading && newsError" class="news-error">
+            <p>{{ newsError }}</p>
+            <button class="retry-btn" (click)="loadNews()">Réessayer</button>
+          </div>
+
+          <div *ngIf="!newsLoading && !newsError && !news.length" class="news-empty">
+            Aucune news disponible pour cette catégorie.
+          </div>
+
+          <div *ngIf="!newsLoading && !newsError && news.length" class="news-list">
+            <article class="news-card" *ngFor="let article of news; trackBy: trackNewsById">
+              <div class="news-card-header">
+                <div>
+                  <p class="news-source">{{ article.source }}</p>
+                  <p class="news-date">{{ article.publishedAt | date:'medium' }}</p>
+                </div>
+                <span class="news-tag" *ngIf="article.categories?.length">{{ article.categories[0] }}</span>
+              </div>
+              <h4 class="news-title">{{ article.title }}</h4>
+              <div class="news-actions">
+                <a class="news-read-more" [href]="article.url" target="_blank" rel="noopener">
+                  Lire plus →
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- All Coins List -->

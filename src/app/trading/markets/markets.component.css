@@ -558,6 +558,205 @@
 }
 
 /* ============================================
+   MARKET NEWS
+   ============================================ */
+.market-news {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  grid-column: 2;
+}
+
+.news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.news-header-text h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-primary, #14301f);
+}
+
+.news-eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(20, 48, 31, 0.6);
+  font-weight: 600;
+}
+
+.refresh-icon {
+  min-width: 42px;
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+}
+
+.news-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(20, 48, 31, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-primary, #14301f);
+  transition: all 0.3s ease;
+}
+
+.filter-chip.active {
+  background: linear-gradient(135deg, var(--color-primary, #14301f) 0%, #1a3d28 100%);
+  color: var(--color-primary-contrast, #fef4e2);
+  border-color: var(--color-primary, #14301f);
+  box-shadow: 0 6px 20px rgba(20, 48, 31, 0.2);
+}
+
+.filter-chip:hover:not(.active) {
+  border-color: rgba(20, 48, 31, 0.3);
+  transform: translateY(-2px);
+}
+
+.news-content {
+  min-height: 200px;
+}
+
+.news-loading,
+.news-error,
+.news-empty {
+  padding: 24px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px dashed rgba(20, 48, 31, 0.1);
+  color: rgba(20, 48, 31, 0.7);
+  font-weight: 600;
+}
+
+.spinner.small {
+  font-size: 13px;
+  padding: 16px 24px;
+}
+
+.news-error {
+  color: #8b1e1e;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.retry-btn {
+  margin-top: 12px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--color-primary, #14301f);
+  color: var(--color-primary-contrast, #fef4e2);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.retry-btn:hover {
+  transform: translateY(-2px);
+}
+
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.news-card {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 48, 31, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.news-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  border-color: rgba(20, 48, 31, 0.2);
+}
+
+.news-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.news-source {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(20, 48, 31, 0.7);
+  font-weight: 700;
+}
+
+.news-date {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: rgba(20, 48, 31, 0.55);
+}
+
+.news-tag {
+  background: rgba(254, 244, 226, 0.8);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-primary, #14301f);
+  border: 1px solid rgba(254, 244, 226, 0.7);
+}
+
+.news-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-primary, #14301f);
+}
+
+.news-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.news-read-more {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary, #14301f);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.news-read-more:hover {
+  transform: translateX(4px);
+}
+
+/* ============================================
    ALL COINS SECTION
    ============================================ */
 .all-coins {
@@ -956,6 +1155,10 @@
   .main-content {
     grid-template-columns: 1fr;
   }
+
+  .market-news {
+    grid-column: 1;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -1000,6 +1203,15 @@
   .table-header div:nth-child(n+4),
   .table-row div:nth-child(n+4) {
     display: none;
+  }
+
+  .news-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .news-card {
+    padding: 14px;
   }
 }
 
